@@ -27,7 +27,7 @@ public class Cliente extends javax.swing.JFrame {
         initComponents();
         modelo = new DefaultListModel();
         
-        cliente = new JSocketClient(6666, 7777, "192.168.0.105");
+        cliente = new JSocketClient(6666, 7777, "192.168.0.100");
         cliente.addJSocketClientEventListener(new JSocketClientEventListener() {
 
             @Override
