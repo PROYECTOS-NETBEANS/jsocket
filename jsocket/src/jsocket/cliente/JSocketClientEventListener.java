@@ -3,7 +3,7 @@ package jsocket.cliente;
 import java.util.EventListener;
 
 public interface JSocketClientEventListener extends EventListener{
-	
+	// ejercicio de pueba 
 	/**
 	 * Se produce en sockets de cliente justo después de que se abre la conexión con el servidor.
 	 * @param sender Referencia del objeto que esta generando el evento
