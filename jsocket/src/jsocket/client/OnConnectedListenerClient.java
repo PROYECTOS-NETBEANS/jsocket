@@ -1,0 +1,45 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package jsocket.client;
+
+import java.util.EventListener;
+import jsocket.utils.OnConnectedEvent;
+/**
+ * Clase que implementa los eventos del socket
+ * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
+ */
+public interface OnConnectedListenerClient extends EventListener{
+    /**
+     * Se produce cuando se conecta al servidor
+     * @param sender Referencia del objeto que esta generando el evento
+     * */
+    public void onConnect(OnConnectedEvent sender);
+
+    /**
+     * Se produce cuando se desconecta del servidor
+     * @param sender Referencia del objeto que esta generando el evento
+     * */	
+    public void onDisconnect(OnConnectedEvent sender);
+
+    /**
+     *  Se produce cuando ocurre un error
+     * @param msg Mensaje de error
+     * */		
+    public void onError(String msg);
+
+    /**
+     * Se produce cuando llegan mensajes del servidor
+     * @param sender Referencia del objeto que esta generando el evento
+     * */		
+    public void OnRead(OnConnectedEvent sender);
+
+    /**
+     * Se produce cuando se envia un mensaje al servidor
+     * @param sender Referencia del objeto [ComunicationClient]
+     * */			
+    public void onWrite(OnConnectedEvent sender);
+}

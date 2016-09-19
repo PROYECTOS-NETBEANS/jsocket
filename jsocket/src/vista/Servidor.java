@@ -5,83 +5,31 @@
  */
 package vista;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import javax.swing.DefaultListModel;
-import jsocket.servidor.JSocketServer;
-import jsocket.servidor.JSocketServerEventListener;
-import jsocket.servidor.JSocketServerEventObject;
+import jsocket.server.JSocketServer;
+import jsocket.server.ManagerConections;
+import jsocket.utils.OnConnectedEvent;
+import jsocket.server.OnConnectedListenerServer;
 /**
  *
  * @author AlexLimbert
  */
-public class Servidor extends javax.swing.JFrame {
+public class Servidor extends javax.swing.JFrame implements OnConnectedListenerServer{
 
-    private DefaultListModel modelo;
-    private JSocketServer servidor;
+    private DefaultListModel modelo = null;
+    private DefaultListModel modeloUsuario = null;
+    private JSocketServer servidor = null;
     /**
      * Creates new form Servidor
      */
+    @SuppressWarnings("LeakingThisInConstructor")
     public Servidor() {
         initComponents();
         modelo = new DefaultListModel();
-        servidor = new JSocketServer( 6666, 7777);
-        servidor.addJSocketEventListener(new JSocketServerEventListener() {
-
-            @Override
-            public void onAccept(JSocketServerEventObject sender) throws IOException {
-                        modelo.addElement("cliente conectado : " + sender.getDireccionIp());
-                        lstLista.setModel(modelo);
-            }
-
-            @Override
-            public void onClientConnect(JSocketServerEventObject sender) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void onClientDisconnect(JSocketServerEventObject sender) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void onClientError(String msg) {
-                 modelo.addElement("Error : " + msg);
-                 lstLista.setModel(modelo);
-            }
-
-            @Override
-            public void onClientRead(JSocketServerEventObject sender, Socket scRead) {
-                try{
-                    if(sender.getFlujoLectura() != null){
-                        if(scRead.isClosed())
-                            System.out.println("Socket cerrado!!!");
-                                
-                        String str = sender.getFlujoLectura().readUTF();
-                        System.out.println("pase read onclientRead");
-                        modelo.addElement(scRead.getRemoteSocketAddress()+" > " + str);
-                        lstLista.setModel(modelo);
-                    }else{
-                        System.out.println("onclientRead flujo cerrado");
-                    }
-                }catch(IOException e){
-                    System.out.println("onclientRead<"+ scRead.getRemoteSocketAddress() +">" + e.getMessage());
-                }
-            }
-
-            @Override
-            public void onClientWrite(JSocketServerEventObject sender, String ip) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void onServerStar() {
-                modelo.addElement(".::SERVIDOR INICIADO::.");
-                lstLista.setModel(modelo);
-            }
-        });
-        servidor.start();
+        modeloUsuario = new DefaultListModel();
+        servidor = new JSocketServer(5555);
+        servidor.addEventListener(this);
+        servidor.iniciarServicio();
     }
 
     /**
@@ -99,8 +47,8 @@ public class Servidor extends javax.swing.JFrame {
         btnEnviar = new javax.swing.JButton();
         txtMensaje = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
-        jLabel3 = new javax.swing.JLabel();
+        lstUsuarios = new javax.swing.JList();
+        lblEstado = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -119,9 +67,9 @@ public class Servidor extends javax.swing.JFrame {
             }
         });
 
-        jScrollPane2.setViewportView(jList1);
+        jScrollPane2.setViewportView(lstUsuarios);
 
-        jLabel3.setText("ESTADO DE SERVIDOR:>>");
+        lblEstado.setText("ESTADO DE SERVIDOR:>>");
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("Mensajes de chat");
@@ -138,23 +86,23 @@ public class Servidor extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnEnviar))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE))
+                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(lblEstado)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 413, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(26, 26, 26)
-                .addComponent(jLabel3)
+                .addComponent(lblEstado)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
@@ -176,8 +124,20 @@ public class Servidor extends javax.swing.JFrame {
     private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
         enviarMensaje();
     }//GEN-LAST:event_btnEnviarActionPerformed
+    /**
+     * Activamos el evento de envio de mensaje
+     */
     private void enviarMensaje(){
-        
+        this.addMessageList(txtMensaje.getText());
+        servidor.onWrite();
+    }
+    private void addMessageList(String msg){
+        modelo.addElement(msg);
+        lstLista.setModel(modelo);
+    }
+    private void addUsuarioList(String usuario){
+        modeloUsuario.addElement(usuario);
+        lstUsuarios.setModel(modeloUsuario);
     }
     /**
      * @param args the command line arguments
@@ -217,12 +177,43 @@ public class Servidor extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEnviar;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lblEstado;
     private javax.swing.JList lstLista;
+    private javax.swing.JList lstUsuarios;
     private javax.swing.JTextField txtMensaje;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onServerStar(OnConnectedEvent sender) {
+        this.lblEstado.setText("ESTADO DE SERVIDOR:>> INICIADO");
+    }
+
+    @Override
+    public void onConnect(OnConnectedEvent sender) {
+        this.addUsuarioList(sender.getSource().toString());
+    }
+
+    @Override
+    public void onDisconnect(OnConnectedEvent sender) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onError(String msg) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onRead(OnConnectedEvent sender) {
+        this.addMessageList(sender.getSource().toString());
+    }
+
+    @Override
+    public void onWrite(OnConnectedEvent sender) {
+        ManagerConections conexion = (ManagerConections) sender.getSource();
+        conexion.sendMessageAll(txtMensaje.getText());
+    }
 }

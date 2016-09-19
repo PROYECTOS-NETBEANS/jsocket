@@ -5,20 +5,21 @@
  */
 package vista;
 
-import java.io.IOException;
 import javax.swing.DefaultListModel;
-import jsocket.cliente.JSocketClient;
-import jsocket.cliente.JSocketClientEventListener;
-import jsocket.cliente.JSocketClientEventObject;
+import jsocket.client.ComunicationClient;
+import jsocket.client.JSocketClient;
+import jsocket.client.OnConnectedListenerClient;
+import jsocket.server.ManagerConections;
+import jsocket.utils.OnConnectedEvent;
 
 /**
  *
- * @author AlexLimbert
+ * @author Alex Limbert
  */
-public class Cliente extends javax.swing.JFrame {
+public class Cliente extends javax.swing.JFrame implements OnConnectedListenerClient{
 
-   private DefaultListModel modelo;
-   private JSocketClient cliente;
+   private DefaultListModel modelo = null;
+   private JSocketClient cliente = null;
    
     /**
      * Creates new form Cliente
@@ -27,53 +28,9 @@ public class Cliente extends javax.swing.JFrame {
         initComponents();
         modelo = new DefaultListModel();
         
-        cliente = new JSocketClient(6666, 7777, "192.168.0.100");
-        cliente.addJSocketClientEventListener(new JSocketClientEventListener() {
-
-            @Override
-            public void onConnect(JSocketClientEventObject sender) {
-
-            }
-
-            @Override
-            public void onConnecting(JSocketClientEventObject sender) {
-            }
-
-            @Override
-            public void onDisconnect(JSocketClientEventObject sender) {
-            }
-
-            @Override
-            public void onError(String msg) {
-                System.out.println("Error Cliente : "+ msg);
-            }
-
-            @Override
-            public void onLookup(JSocketClientEventObject sender) {
-            }
-
-            @Override
-            public void OnRead(JSocketClientEventObject sender) {
-            }
-
-            @Override
-            public void onWrite(JSocketClientEventObject sender) {
-		try {
-                        System.out.println("entre a escribir ");
-                        if(txtMensaje.getText().length()>0){
-                            System.out.println("enviando: "+ txtMensaje.getText());
-                            //sender.getFlujoEscritura().writeUTF(txtMensaje.getText());
-                            //sender.getFlujoEscritura().flush();
-                            sender.escribirDatos(txtMensaje.getText());
-                        }
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-            }
-        });
+        cliente = new JSocketClient(5555, "192.168.0.111");
+        cliente.addEventListener(this);
         cliente.conectarServidor();
-        
     }
 
     /**
@@ -190,9 +147,12 @@ public class Cliente extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void enviarMensaje(){
-        modelo.addElement(txtMensaje.getText());
+        this.addMessageList(txtMensaje.getText());
+        cliente.onWrite();
+    }
+    private void addMessageList(String msg){
+        modelo.addElement(msg);
         lstLista.setModel(modelo);
-        cliente.enviarMensajeAServidor();
     }
     /**
      * @param args the command line arguments
@@ -241,4 +201,32 @@ public class Cliente extends javax.swing.JFrame {
     private javax.swing.JList lstLista;
     private javax.swing.JTextField txtMensaje;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onConnect(OnConnectedEvent sender) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onDisconnect(OnConnectedEvent sender) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onError(String msg) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void OnRead(OnConnectedEvent sender) {
+        this.addMessageList(sender.getSource().toString());
+    }
+
+    @Override
+    public void onWrite(OnConnectedEvent sender) {
+        System.out.println("entre evennto onwrite");
+        ComunicationClient conexion = (ComunicationClient) sender.getSource();
+        conexion.sendMessage(txtMensaje.getText());
+        System.out.println("Sali de onwrite");
+    }
 }
