@@ -8,7 +8,7 @@ import java.net.Socket;
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
  */
 public class ComunicationServer extends Thread{
-
+    private String keyId = "";
     private boolean LISTING = true;
     private Socket skConexion = null;
     private DataInputStream stRead = null;
@@ -20,6 +20,14 @@ public class ComunicationServer extends Thread{
         this.skConexion = client;
         this.LISTING = true;
         this.listener = listener;
+        keyId = skConexion.getInetAddress().getHostAddress()+ ":" + String.valueOf(skConexion.getPort());
+    }
+    /**
+     * Devuelve la key que esta formado por la ip y puerto del cliente que esta conectado
+     * @return String 
+     */
+    public String getKeyId(){
+        return this.keyId;
     }
     /**
      * Proceso que se ejecutara cuando se desencadene una lectura
@@ -64,8 +72,7 @@ public class ComunicationServer extends Thread{
      * Metodo que lanza el evento de lectura del servidor
      */
     private void onRead(){
-        System.out.println("onread");
-        listener.onRead(new OnConnectedEventServer(this));
+        listener.onRead(new OnConnectedEventServer(this), this.getKeyId());
     }
     /**
      * Lee un los datos que llegan del cliente
@@ -73,7 +80,9 @@ public class ComunicationServer extends Thread{
      */
     public String getDatos(){
         try{
-            return stRead.readUTF();
+            String msg = stRead.readUTF();
+            
+            return msg;
         }catch(IOException e){
             System.out.println("Error en getDatos " + e.getMessage());
             return "";

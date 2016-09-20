@@ -39,8 +39,9 @@ public interface OnConnectedListenerServer  extends EventListener{
     /**
      * Se produce cuando llegan mensajes del cliente
      * @param sender Referencia del objeto [ComunicationServer] 
+     * @param keyClient String Identificador del cliente que envia el mensaje
      * */
-    public void onRead(OnConnectedEventServer sender); // ya esta mejorado
+    public void onRead(OnConnectedEventServer sender, String keyClient); // ya esta mejorado
         // los que tengan X estan ya solucionado
     /**
      * Se produce cuando se envia mensaje al servidor

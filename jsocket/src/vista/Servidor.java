@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package vista;
 
 import javax.swing.DefaultListModel;
@@ -10,8 +5,8 @@ import jsocket.server.JSocketServer;
 import jsocket.server.OnConnectedEventServer;
 import jsocket.server.OnConnectedListenerServer;
 /**
- *
- * @author AlexLimbert
+ * 
+ * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
  */
 public class Servidor extends javax.swing.JFrame implements OnConnectedListenerServer{
 
@@ -162,8 +157,10 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-            new Servidor().setVisible(true);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Servidor().setVisible(true);
+            }
         });
     }
 
@@ -200,12 +197,8 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
     }
 
     @Override
-    public void onRead(OnConnectedEventServer sender) {
+    public void onRead(OnConnectedEventServer sender, String keyClient) {
         this.addMessageList(sender.getDatos());
-        // si quiero que se reenvie el mensaje que llega de un cliente
-        // tengo que reenviar a todos excepto uno
-        // activar el servidor
-        // servidor.onWrite();
     }
 
     @Override

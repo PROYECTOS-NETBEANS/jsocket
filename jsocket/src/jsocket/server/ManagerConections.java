@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ManagerConections extends Thread{
     
@@ -52,11 +53,11 @@ public class ManagerConections extends Thread{
         try{
             skConexion = skServer.accept();
             
-            String key = skConexion.getInetAddress().getHostAddress()+ ":" + String.valueOf(skConexion.getPort());
+            
             ComunicationServer comunicacion = new ComunicationServer(skConexion, listener);
             comunicacion.start();
-            this.onConnect(key);
-            clientHashMap.put(key, comunicacion);
+            this.onConnect(comunicacion.getKeyId());
+            clientHashMap.put(comunicacion.getKeyId(), comunicacion);
         }catch(IOException ex){
             System.out.println("Error in jsocket.servidor.ManagerConections.onAccept()");
         }
@@ -70,11 +71,11 @@ public class ManagerConections extends Thread{
      */
     public void sendMessageAll(String msg){
         
-        clientHashMap.entrySet().stream().forEach((entry) -> {
+        for (Map.Entry<String, ComunicationServer> entry : clientHashMap.entrySet()) {
             String key = entry.getKey();
             ComunicationServer value = entry.getValue();
             value.escribirDatos(msg);
-        });
+        }
     }
     /**
      * Metodo que lanza el evento de escritura
