@@ -6,10 +6,8 @@
 package vista;
 
 import javax.swing.DefaultListModel;
-import jsocket.client.ComunicationClient;
 import jsocket.client.JSocketClient;
 import jsocket.client.OnConnectedListenerClient;
-import jsocket.server.ManagerConections;
 import jsocket.client.OnConnectedEventClient;
 
 /**
@@ -219,14 +217,11 @@ public class Cliente extends javax.swing.JFrame implements OnConnectedListenerCl
 
     @Override
     public void OnRead(OnConnectedEventClient sender) {
-        this.addMessageList(sender.getSource().toString());
+        this.addMessageList(sender.getDatos());
     }
 
     @Override
     public void onWrite(OnConnectedEventClient sender) {
-        System.out.println("entre evennto onwrite");
-        ComunicationClient conexion = (ComunicationClient) sender.getSource();
-        conexion.sendMessage(txtMensaje.getText());
-        System.out.println("Sali de onwrite");
+        sender.sendMessage(txtMensaje.getText());
     }
 }

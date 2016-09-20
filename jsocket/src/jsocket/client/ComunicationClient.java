@@ -41,17 +41,31 @@ public class ComunicationClient extends Thread{
                 // aqui tengo que lanzar una excepcion
             }
 
-            this.leerDatos();
+            this.onRead();
         }
     }
-    private void leerDatos(){
+    /**
+     * Devuelve los datos que llegan del servidor
+     * @return String
+     */   
+    public String getDatos(){
         try {
-            String data = stRead.readUTF();
-            listener.OnRead(new OnConnectedEventClient(data));
+            return stRead.readUTF();
         } catch (IOException e) {
-            System.out.println("Error leerDatos : " + e.getMessage());
+            System.out.println("Error en ComunicationClient.getDatos : " + e.getMessage());
+            return "";
         }
     }
+    /**
+     * Metodo que lanza el evento de lectura cuando llega un mensaje
+     */
+    private void onRead(){
+        listener.OnRead(new OnConnectedEventClient(this));
+    }
+    /**
+     * Metodo que envia un mensaje al servidor
+     * @param msg Mensaje a enviarse al servidor
+     */
     public void sendMessage(String msg){
         try {
             stWrite.writeUTF(msg);
@@ -62,6 +76,9 @@ public class ComunicationClient extends Thread{
             System.out.println("Error : writeData : " + e.getMessage());
         }
     }
+    /**
+     * Metodo que obtiene los flujos de datos del socket
+     */
     private void getFlujo(){
         try{
             stRead = new DataInputStream(skConexion.getInputStream());

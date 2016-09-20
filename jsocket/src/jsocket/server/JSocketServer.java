@@ -8,7 +8,6 @@ package jsocket.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import jsocket.client.OnConnectedEventClient;
 
 /**
  *
@@ -50,6 +49,9 @@ public class JSocketServer {
     public void detenerServicio(){
         manager.interrupt();
     }
+    /**
+     * Metodo que lanza el evento de envio de mensaje
+     */
     public void onWrite(){
         manager.onWrite();
     }

@@ -7,8 +7,6 @@ package vista;
 
 import javax.swing.DefaultListModel;
 import jsocket.server.JSocketServer;
-import jsocket.server.ManagerConections;
-import jsocket.client.OnConnectedEventClient;
 import jsocket.server.OnConnectedEventServer;
 import jsocket.server.OnConnectedListenerServer;
 /**
@@ -156,22 +154,16 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Servidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Servidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Servidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Servidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        
+        //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Servidor().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Servidor().setVisible(true);
         });
     }
 
@@ -194,7 +186,7 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
 
     @Override
     public void onConnect(OnConnectedEventServer sender) {
-        this.addUsuarioList(sender.getSource().toString());
+        this.addUsuarioList(sender.getIpClient());
     }
 
     @Override
@@ -209,12 +201,15 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
 
     @Override
     public void onRead(OnConnectedEventServer sender) {
-        this.addMessageList(sender.getSource().toString());
+        this.addMessageList(sender.getDatos());
+        // si quiero que se reenvie el mensaje que llega de un cliente
+        // tengo que reenviar a todos excepto uno
+        // activar el servidor
+        // servidor.onWrite();
     }
 
     @Override
     public void onWrite(OnConnectedEventServer sender) {
-        ManagerConections conexion = (ManagerConections) sender.getSource();
-        conexion.sendMessageAll(txtMensaje.getText());
+        sender.sendMessageAll(txtMensaje.getText());
     }
 }

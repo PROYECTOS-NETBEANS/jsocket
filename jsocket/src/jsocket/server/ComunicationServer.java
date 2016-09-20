@@ -1,5 +1,4 @@
 package jsocket.server;
-import jsocket.client.OnConnectedEventClient;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -37,7 +36,7 @@ public class ComunicationServer extends Thread{
             if(!skConexion.isConnected()){
                 System.out.println("Socket Desconectado");
             }
-            this.leerDatos();
+            this.onRead();
         }
     }
     private void getFlujo(){
@@ -60,14 +59,24 @@ public class ComunicationServer extends Thread{
         } catch (IOException e) {
             System.out.println("Error al scribir  datos" + e.getMessage());
         }
-    }    
-    private void leerDatos(){
-        try {
-            String msg = stRead.readUTF();
-            listener.onRead(new OnConnectedEventServer(msg, "lectura"));
-        } catch (IOException e) {
-            System.out.println("Error a leer Datos " + e.getMessage());
+    }
+    /**
+     * Metodo que lanza el evento de lectura del servidor
+     */
+    private void onRead(){
+        System.out.println("onread");
+        listener.onRead(new OnConnectedEventServer(this));
+    }
+    /**
+     * Lee un los datos que llegan del cliente
+     * @return Retorna el mensaje que llega del cliente
+     */
+    public String getDatos(){
+        try{
+            return stRead.readUTF();
+        }catch(IOException e){
+            System.out.println("Error en getDatos " + e.getMessage());
+            return "";
         }
-        
     }
 }

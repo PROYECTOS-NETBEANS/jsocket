@@ -23,7 +23,9 @@ class MiClase1 extends MiClase{
       super(nombre);
   }
 }
-
+class claseDaddy {
+    public String daddy;
+}
 public class Main {
     
   public Main(){
@@ -37,7 +39,12 @@ public class Main {
       m.addClase(c2);
   }
   
-  public void addClase(MiClase clase){
+  public void addClase(Object clase){
+      
+     if(clase instanceof MiClase1){
+         System.out.println("");
+     }
+     
      if(clase.getClass() == MiClase.class){
          System.out.println("Clase Padre");
      }else{

@@ -16,13 +16,13 @@ public interface OnConnectedListenerServer  extends EventListener{
      * Ocurre cuando el servidor levanta el servicio correctamente
      * @param sender Referencia [managerConnection]
      */
-    public void onServerStar(OnConnectedEventServer sender);
+    public void onServerStar(OnConnectedEventServer sender);// ya esta mejorado
 
     /**
      * Se produce cuando un cliente se conecta al servidor
      * @param sender Referencia Mensaje que se genera [String]
      * */
-    public void onConnect(OnConnectedEventServer sender);
+    public void onConnect(OnConnectedEventServer sender); // ya esta mejorado
 
     /**
      * Se produce cuando un cliente se desconecta del servidor
@@ -31,21 +31,20 @@ public interface OnConnectedListenerServer  extends EventListener{
     public void onDisconnect(OnConnectedEventServer sender);	
 
     /**
-     * Se produce cuando se produce un fallo en el establecimiento, utilizando, 
-     * o terminar la conexi?n de socket a un socket de cliente individual. 
+     * Se produce cuando se ocurre un error dentro del socket
      * @param msg mensaje de error
      * */
-    public void onError(String msg);
+    public void onError(String msg); // no esta siendo utilizado
 
     /**
-     * Se produce cuando llegan mensajes del servidor
-     * @param sender Referencia del objeto que esta generando el evento [msg String] 
+     * Se produce cuando llegan mensajes del cliente
+     * @param sender Referencia del objeto [ComunicationServer] 
      * */
-    public void onRead(OnConnectedEventServer sender);
-
+    public void onRead(OnConnectedEventServer sender); // ya esta mejorado
+        // los que tengan X estan ya solucionado
     /**
      * Se produce cuando se envia mensaje al servidor
      * @param sender Referencia al EventObject [managerConections]
      * */
-    public void onWrite(OnConnectedEventServer sender);
+    public void onWrite(OnConnectedEventServer sender); // ya esta mejorado
 }
