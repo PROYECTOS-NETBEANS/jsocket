@@ -1,5 +1,5 @@
 package jsocket.server;
-import jsocket.utils.OnConnectedEvent;
+import jsocket.client.OnConnectedEventClient;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -64,7 +64,7 @@ public class ComunicationServer extends Thread{
     private void leerDatos(){
         try {
             String msg = stRead.readUTF();
-            listener.onRead(new OnConnectedEvent(msg, "lectura"));
+            listener.onRead(new OnConnectedEventServer(msg, "lectura"));
         } catch (IOException e) {
             System.out.println("Error a leer Datos " + e.getMessage());
         }

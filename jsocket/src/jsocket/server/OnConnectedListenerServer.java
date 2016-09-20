@@ -5,7 +5,6 @@
  */
 package jsocket.server;
 
-import jsocket.utils.OnConnectedEvent;
 import java.util.EventListener;
 
 /**
@@ -17,19 +16,19 @@ public interface OnConnectedListenerServer  extends EventListener{
      * Ocurre cuando el servidor levanta el servicio correctamente
      * @param sender Referencia [managerConnection]
      */
-    public void onServerStar(OnConnectedEvent sender);
+    public void onServerStar(OnConnectedEventServer sender);
 
     /**
      * Se produce cuando un cliente se conecta al servidor
      * @param sender Referencia Mensaje que se genera [String]
      * */
-    public void onConnect(OnConnectedEvent sender);
+    public void onConnect(OnConnectedEventServer sender);
 
     /**
      * Se produce cuando un cliente se desconecta del servidor
      * @param sender Referencia del objeto que esta generando el evento
      * */
-    public void onDisconnect(OnConnectedEvent sender);	
+    public void onDisconnect(OnConnectedEventServer sender);	
 
     /**
      * Se produce cuando se produce un fallo en el establecimiento, utilizando, 
@@ -42,11 +41,11 @@ public interface OnConnectedListenerServer  extends EventListener{
      * Se produce cuando llegan mensajes del servidor
      * @param sender Referencia del objeto que esta generando el evento [msg String] 
      * */
-    public void onRead(OnConnectedEvent sender);
+    public void onRead(OnConnectedEventServer sender);
 
     /**
      * Se produce cuando se envia mensaje al servidor
      * @param sender Referencia al EventObject [managerConections]
      * */
-    public void onWrite(OnConnectedEvent sender);
+    public void onWrite(OnConnectedEventServer sender);
 }

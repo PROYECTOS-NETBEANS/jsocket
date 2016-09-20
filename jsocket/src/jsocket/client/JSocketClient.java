@@ -7,7 +7,6 @@
 package jsocket.client;
 import java.io.IOException;
 import java.net.Socket;
-import jsocket.utils.OnConnectedEvent;
 /**
  * Clase socket del cliente
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
@@ -48,7 +47,7 @@ public class JSocketClient {
     }
     public void onWrite(){
         try{
-            OnConnectedEvent sender = new OnConnectedEvent(comunicacion, "Escribir");
+            OnConnectedEventClient sender = new OnConnectedEventClient(comunicacion);
             listener.onWrite(sender);
             System.out.println("pase el onWrite");
         }catch(Exception e){

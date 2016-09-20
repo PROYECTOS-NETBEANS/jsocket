@@ -1,6 +1,6 @@
 package jsocket.server;
 
-import jsocket.utils.OnConnectedEvent;
+import jsocket.client.OnConnectedEventClient;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -44,7 +44,7 @@ public class ManagerConections extends Thread{
     }
     
     private void onServerStar(){
-        OnConnectedEvent sender = new OnConnectedEvent(this, "Servidor iniciado");
+        OnConnectedEventServer sender = new OnConnectedEventServer(this, "Servidor iniciado");
         listener.onServerStar(sender);
     }
 
@@ -80,12 +80,12 @@ public class ManagerConections extends Thread{
      * Metodo que lanza el evento de escritura
      */
     public void onWrite(){
-        OnConnectedEvent sender = new OnConnectedEvent(this, "Escribir");
+        OnConnectedEventServer sender = new OnConnectedEventServer(this, "Escribir");
         listener.onWrite(sender);
     }
     
     private void onConnect(String key){
-        OnConnectedEvent sender = new OnConnectedEvent(key, "usuario conectado");
+        OnConnectedEventServer sender = new OnConnectedEventServer(key, "usuario conectado");
         listener.onConnect(sender);
     }
 }

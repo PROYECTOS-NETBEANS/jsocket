@@ -10,7 +10,7 @@ import jsocket.client.ComunicationClient;
 import jsocket.client.JSocketClient;
 import jsocket.client.OnConnectedListenerClient;
 import jsocket.server.ManagerConections;
-import jsocket.utils.OnConnectedEvent;
+import jsocket.client.OnConnectedEventClient;
 
 /**
  *
@@ -203,12 +203,12 @@ public class Cliente extends javax.swing.JFrame implements OnConnectedListenerCl
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void onConnect(OnConnectedEvent sender) {
+    public void onConnect(OnConnectedEventClient sender) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void onDisconnect(OnConnectedEvent sender) {
+    public void onDisconnect(OnConnectedEventClient sender) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -218,12 +218,12 @@ public class Cliente extends javax.swing.JFrame implements OnConnectedListenerCl
     }
 
     @Override
-    public void OnRead(OnConnectedEvent sender) {
+    public void OnRead(OnConnectedEventClient sender) {
         this.addMessageList(sender.getSource().toString());
     }
 
     @Override
-    public void onWrite(OnConnectedEvent sender) {
+    public void onWrite(OnConnectedEventClient sender) {
         System.out.println("entre evennto onwrite");
         ComunicationClient conexion = (ComunicationClient) sender.getSource();
         conexion.sendMessage(txtMensaje.getText());

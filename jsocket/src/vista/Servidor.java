@@ -8,7 +8,8 @@ package vista;
 import javax.swing.DefaultListModel;
 import jsocket.server.JSocketServer;
 import jsocket.server.ManagerConections;
-import jsocket.utils.OnConnectedEvent;
+import jsocket.client.OnConnectedEventClient;
+import jsocket.server.OnConnectedEventServer;
 import jsocket.server.OnConnectedListenerServer;
 /**
  *
@@ -187,17 +188,17 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void onServerStar(OnConnectedEvent sender) {
+    public void onServerStar(OnConnectedEventServer sender) {
         this.lblEstado.setText("ESTADO DE SERVIDOR:>> INICIADO");
     }
 
     @Override
-    public void onConnect(OnConnectedEvent sender) {
+    public void onConnect(OnConnectedEventServer sender) {
         this.addUsuarioList(sender.getSource().toString());
     }
 
     @Override
-    public void onDisconnect(OnConnectedEvent sender) {
+    public void onDisconnect(OnConnectedEventServer sender) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -207,12 +208,12 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
     }
 
     @Override
-    public void onRead(OnConnectedEvent sender) {
+    public void onRead(OnConnectedEventServer sender) {
         this.addMessageList(sender.getSource().toString());
     }
 
     @Override
-    public void onWrite(OnConnectedEvent sender) {
+    public void onWrite(OnConnectedEventServer sender) {
         ManagerConections conexion = (ManagerConections) sender.getSource();
         conexion.sendMessageAll(txtMensaje.getText());
     }

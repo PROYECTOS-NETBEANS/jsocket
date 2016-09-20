@@ -8,7 +8,7 @@ package jsocket.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import jsocket.utils.OnConnectedEvent;
+import jsocket.client.OnConnectedEventClient;
 
 /**
  *

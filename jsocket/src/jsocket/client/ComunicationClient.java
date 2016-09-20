@@ -5,7 +5,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import jsocket.utils.OnConnectedEvent;
 /**
  * Clase escuchador que envia y recibe mensajes del servidor
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
@@ -48,7 +47,7 @@ public class ComunicationClient extends Thread{
     private void leerDatos(){
         try {
             String data = stRead.readUTF();
-            listener.OnRead(new OnConnectedEvent(data, "lectura"));
+            listener.OnRead(new OnConnectedEventClient(data));
         } catch (IOException e) {
             System.out.println("Error leerDatos : " + e.getMessage());
         }
