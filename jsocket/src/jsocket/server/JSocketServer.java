@@ -1,18 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package jsocket.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 
 /**
- *
- * @author limbe
- */
+ * Servidor socket para que los clientes puedan conectarse
+ * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com> */
 public class JSocketServer {
     
     private int puerto = 5555;

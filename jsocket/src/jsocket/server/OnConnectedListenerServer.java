@@ -8,8 +8,8 @@ package jsocket.server;
 import java.util.EventListener;
 
 /**
- *
- * @author limbe
+ * Intefaza que escucha los eventos del servidor socket
+ * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
  */
 public interface OnConnectedListenerServer  extends EventListener{
     /**

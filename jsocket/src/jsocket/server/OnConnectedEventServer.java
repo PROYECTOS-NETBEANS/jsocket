@@ -3,7 +3,7 @@ package jsocket.server;
 import java.util.EventObject;
 
 /**
- * 
+ * Evento que se lanza dentro de los escuchadores del servidor
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
  */
 public class OnConnectedEventServer extends EventObject{

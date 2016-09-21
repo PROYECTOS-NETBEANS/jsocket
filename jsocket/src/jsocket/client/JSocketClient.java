@@ -8,7 +8,7 @@ package jsocket.client;
 import java.io.IOException;
 import java.net.Socket;
 /**
- * Clase socket del cliente
+ * Clase socket del cliente que envia y recibe mensajes del servidor
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
  */
 public class JSocketClient {

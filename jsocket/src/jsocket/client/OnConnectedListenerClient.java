@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package jsocket.client;
 
 import java.util.EventListener;
 /**
- * Clase que implementa los eventos del socket
+ * Intefaza que escucha los eventos del cliente socket
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
  */
 public interface OnConnectedListenerClient extends EventListener{

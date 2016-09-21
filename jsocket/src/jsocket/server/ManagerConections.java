@@ -5,7 +5,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * Administrador de conexiones de los clientes, donde estan todos los clientes conectados
+ * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com> */
 public class ManagerConections extends Thread{
     
     private ServerSocket skServer = null;
