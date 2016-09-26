@@ -2,6 +2,7 @@ package jsocket.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.HashMap;
 
 /**
  * Servidor socket para que los clientes puedan conectarse
@@ -11,13 +12,26 @@ public class JSocketServer {
     private int puerto = 5555;
     private ServerSocket skServer;
     private ManagerConections manager = null;
-    
-    
+    private static HashMap<String, ComunicationServer> clientHashMap = null;
+
     public JSocketServer(int puerto){
-        this.puerto = puerto;
+        this.puerto = puerto;        
         init();
     }
- 
+    public static ComunicationServer getConnectionsClient(String key){
+        if(clientHashMap == null){
+            clientHashMap = new HashMap<>();
+            return null;
+        }else{
+            return clientHashMap.get(key);
+        }
+    }
+    public static void setConnectionClient(ComunicationServer conexion){
+        if(clientHashMap == null){
+            clientHashMap = new HashMap<>();
+            clientHashMap.put(key, conexion)
+        }
+    }    
     public void addEventListener(OnConnectedListenerServer listener){
         manager.addEventListener(listener);
     }

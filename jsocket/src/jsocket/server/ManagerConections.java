@@ -14,15 +14,11 @@ public class ManagerConections extends Thread{
     private Socket skConexion = null;
     
     private boolean LISTENING = true;
-
-    private HashMap<String, ComunicationServer> clientHashMap = null;
-
     //private EventListenerList listenerList = null;
     private OnConnectedListenerServer listener = null;
     
     public ManagerConections(ServerSocket server){
-        this.skServer = server;
-        this.clientHashMap = new HashMap<>();
+        this.skServer = server;        
         //this.listenerList = new EventListenerList();
     }
     //public void addEventListener(EventListener listener){
@@ -55,11 +51,10 @@ public class ManagerConections extends Thread{
         try{
             skConexion = skServer.accept();
             
-            
             ComunicationServer comunicacion = new ComunicationServer(skConexion, listener);
             comunicacion.start();
-            this.onConnect(comunicacion.getKeyId());
-            clientHashMap.put(comunicacion.getKeyId(), comunicacion);
+            this.onConnect("key de ip");
+            JSocketServer.setConnectionClient(comunicacion);
         }catch(IOException ex){
             System.out.println("Error in jsocket.servidor.ManagerConections.onAccept()");
         }
@@ -72,8 +67,8 @@ public class ManagerConections extends Thread{
      * @param msg Mensaje a enviar al cliente
      */
     public void sendMessageAll(String msg){
-        
-        for (Map.Entry<String, ComunicationServer> entry : clientHashMap.entrySet()) {
+        //modificar esto por que se cambio el hashMap
+        for (Map.Entry<String, ComunicationServer> entry : clientHashMap.entrySet()){
             String key = entry.getKey();
             ComunicationServer value = entry.getValue();
             value.escribirDatos(msg);
