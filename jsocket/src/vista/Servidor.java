@@ -1,9 +1,12 @@
 package vista;
 
 import javax.swing.DefaultListModel;
+
 import jsocket.server.JSocketServer;
 import jsocket.server.OnConnectedEventServer;
 import jsocket.server.OnConnectedListenerServer;
+import jsocket.utils.Paquete;
+import jsocket.utils.TipoMsg;
 /**
  * 
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
@@ -11,18 +14,20 @@ import jsocket.server.OnConnectedListenerServer;
 public class Servidor extends javax.swing.JFrame implements OnConnectedListenerServer{
 
     private DefaultListModel modelo = null;
-    private DefaultListModel modeloUsuario = null;
-    private JSocketServer servidor = null;
-
+    
+    private DefaultListModel usuarios = null;
+            
+    private JSocketServer server = null;
     
     @SuppressWarnings("LeakingThisInConstructor")
     public Servidor() {
+        
         initComponents();
         modelo = new DefaultListModel();
-        modeloUsuario = new DefaultListModel();
-        servidor = new JSocketServer(5555);
-        servidor.addEventListener(this);
-        servidor.iniciarServicio();
+        usuarios = new DefaultListModel();
+        server = new JSocketServer(5555);
+        server.addEventListener(this);
+        server.iniciarServicio();
     }
 
     /**
@@ -43,6 +48,7 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
         lstUsuarios = new javax.swing.JList();
         lblEstado = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -67,6 +73,13 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("Mensajes de chat");
 
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -84,7 +97,9 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblEstado)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1)
+                        .addGap(132, 132, 132))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 413, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -94,9 +109,11 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(lblEstado)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addGap(22, 22, 22)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblEstado)
+                    .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel4))
@@ -117,6 +134,10 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
     private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
         enviarMensaje();
     }//GEN-LAST:event_btnEnviarActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
     /**
      * Activamos el evento de envio de mensaje
      */
@@ -124,13 +145,25 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
         //this.addMessageList(txtMensaje.getText());
         //servidor.onWrite();
     }
+    private void removerUsuario(int key){
+        for(int i = 0; i < usuarios.getSize(); i++){
+            Paquete p = (Paquete) usuarios.get(i);
+            if(p.getKey() == key){
+                usuarios.remove(i);
+                lstUsuarios.setModel(usuarios);
+                this.repaint();
+                return;
+            }
+        }
+    }
     private void addMessageList(String msg){
+        System.out.println("entre add msg");
         modelo.addElement(msg);
         lstLista.setModel(modelo);
     }
-    private void addUsuarioList(String usuario){
-        modeloUsuario.addElement(usuario);
-        lstUsuarios.setModel(modeloUsuario);
+    private void addUsuarioList(Paquete p){
+        usuarios.addElement(p);
+        lstUsuarios.setModel(usuarios);
     }
     /**
      * @param args the command line arguments
@@ -165,6 +198,7 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEnviar;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
@@ -177,22 +211,30 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
 
     @Override
     public void onServerStar(OnConnectedEventServer data) {
-        this.lblEstado.setText("SERVIDOR INICIADO EN LA IP : " + data.getIpServer());
+        this.lblEstado.setText("SERVIDOR INICIADO");
     }
 
     @Override
-    public void onConnect(Object sender, OnConnectedEventServer data) {
-        //this.addUsuarioList(sender.getIpClient());
+    public void onConnect(Object sender, OnConnectedEventServer data){
+        System.out.println("key conect : " + String.valueOf(data.getKeyClient()));
+        this.addUsuarioList(new Paquete(data.getMessageClient(), data.getKeyClient(), TipoMsg.MSG_NORMAL));
     }
 
     @Override
     public void onDisconnect(Object sender, OnConnectedEventServer data) {
-        
+        if(data.getClientDisconnect()){
+            server.detenerServicio();
+            System.out.println("key : " + String.valueOf(data.getKeyClient()));
+            this.removerUsuario(data.getKeyClient());
+        }
+            
     }
 
     @Override
     public void onRead(Object sender, OnConnectedEventServer data) {
-        //this.addMessageList(sender.getDatos());
+        System.out.println("entre a mensaje : " + String.valueOf(data.getKeyClient()));
+        
+        this.addMessageList(data.getMessageClient());
     }
 
     /*

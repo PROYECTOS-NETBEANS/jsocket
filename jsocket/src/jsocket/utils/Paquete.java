@@ -6,11 +6,28 @@
 package jsocket.utils;
 
 public class Paquete {
-    public int key;
-    public String msg;
     
-    public Paquete(String msg, int key){
+    private int key;
+    private String msg;
+    private TipoMsg tpMsg;
+    
+    public Paquete(String msg, int key, TipoMsg tp){
         this.key = key;
         this.msg = msg;
+        this.tpMsg = tp;
+    }
+    public String getMsg(){
+        return this.msg;
+    }
+    public int getKey(){
+        return this.key;
+    }
+    public TipoMsg getTipoMsg(){
+        return this.tpMsg;
+    }
+    
+    @Override
+    public String toString() {
+        return this.msg;
     }
 }

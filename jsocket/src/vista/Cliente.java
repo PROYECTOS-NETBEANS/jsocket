@@ -26,7 +26,7 @@ public class Cliente extends javax.swing.JFrame implements OnConnectedListenerCl
         initComponents();
         modelo = new DefaultListModel();
         
-        cliente = new JSocketClient(5555, "192.168.0.111");
+        cliente = new JSocketClient(5555, "192.168.0.100");
         cliente.addEventListener(this);
         cliente.conectarServidor();
     }

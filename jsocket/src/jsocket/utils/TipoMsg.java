@@ -10,14 +10,9 @@ package jsocket.utils;
  * 
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
  */
-public enum TipoMensaje {
-    
-    MSG_PUBLICO("Mensaje para todos"),
-    MSG_PRIVADO("Mensaje privado");
-    
-    private String msg = "";
-    
-    private TipoMensaje(String msg){
-        this.msg = msg;
-    }
+public enum TipoMsg {
+    MSG_PUBLICO,
+    MSG_PRIVADO,
+    MSG_DESCONECTADO,
+    MSG_NORMAL
 }

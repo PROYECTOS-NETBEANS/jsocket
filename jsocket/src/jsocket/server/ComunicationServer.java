@@ -31,15 +31,10 @@ public class ComunicationServer extends Thread{
         this.getFlujo();
         // escuchando los paquetes que el servidor enviará        
         while(LISTING){
-            if(skConexion.isClosed()){
-                System.out.println("Socket cerrado");
-            }
-            if(!skConexion.isConnected()){
-                System.out.println("Socket Desconectado");
-            }
-            JSocketServer.onRead(this);
+            this.leerDatos();
         }
     }
+    
     private void getFlujo(){
         try{
             stRead = new DataInputStream(skConexion.getInputStream());
@@ -62,17 +57,36 @@ public class ComunicationServer extends Thread{
         }
     }
     /**
-     * Lee un los datos que llegan del cliente
-     * @return Retorna el mensaje que llega del cliente
+     * Metodo que lee los datos que llegan del servidor
      */
-    public String getDatos(){
+    private void leerDatos(){
         try{
             String msg = stRead.readUTF();
-            
-            return msg;
+            System.out.println("antes del evento on read (leerDatos)");
+            JSocketServer.onRead(this.key, msg);
         }catch(IOException e){
-            System.out.println("Error en getDatos " + e.getMessage());
-            return "";
+            System.out.println("Error : ComunicationServer.leerDatos() key : " + String.valueOf(this.key));
+            this.cerrarConexion();
+            JSocketServer.onDisconnect(this.key);
         }
+    }
+    /**
+     * Cerramos el stream el socket e hilo
+     */
+    private void cerrarConexion(){
+        try {
+            stRead.close();
+            System.out.println("cierre de st read");
+            stWrite.close();
+            System.out.println("cierre de st write");
+            skConexion.close();
+            System.out.println("cierre de socket");
+            this.detenerEscuchador();
+        } catch (IOException e) {
+            System.out.println("ComunicationServer.cerrarConexion() : " + e.getMessage());
+        }
+    }
+    public void detenerEscuchador(){
+        this.LISTING = false;
     }
 }

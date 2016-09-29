@@ -1,6 +1,8 @@
 package jsocket.server;
 
 import java.util.EventObject;
+import jsocket.utils.Paquete;
+import jsocket.utils.TipoMsg;
 
 /**
  * Evento que se lanza dentro de los escuchadores del servidor
@@ -10,16 +12,6 @@ public class OnConnectedEventServer extends EventObject{
     
     public OnConnectedEventServer(Object source) {
         super(source);
-    }
-    /**
-     * Funcion que devuelve los datos llegados del cliente 
-     * @return String : datos devuelto del cliente
-     */
-    public String getDatos(){
-        if(this.getSource() instanceof ComunicationServer)
-            return ((ComunicationServer) this.source).getDatos();
-        else
-            return "";
     }
     /**
      * Metodo que envia mensajes a todos los clientes que estan conectados
@@ -36,9 +28,40 @@ public class OnConnectedEventServer extends EventObject{
      * @return String
      */
     public String getIpServer(){
-        if(this.getSource() instanceof String)
-            return this.getSource().toString();
-        else
+        
+        if(this.getSource() instanceof Paquete){
+            return ((Paquete) this.getSource()).getMsg();
+        }else{
+            return "Ip no encontrada !!";
+        }
+    }
+    public int getKeyClient(){
+        if(this.getSource() instanceof Paquete){
+            return ((Paquete) this.getSource()).getKey();
+        }else{
+            return 0;
+        }
+    }
+    /**
+     * Metodo devuelve el mensaje que llega de los clientes
+     * @return String mensaje
+     */
+    public String getMessageClient(){
+        if(this.getSource() instanceof Paquete){
+            return ((Paquete) this.getSource()).getMsg();
+        }else{
             return "";
+        }
+    }
+    /**
+     * Devuelve true si el cliente esta desconectado, falso caso contrario
+     * @return 
+     */
+    public boolean getClientDisconnect(){
+        if(this.getSource() instanceof Paquete){
+            return (((Paquete) this.getSource()).getTipoMsg() == TipoMsg.MSG_DESCONECTADO);
+        }else{
+            return false;
+        }        
     }
 }

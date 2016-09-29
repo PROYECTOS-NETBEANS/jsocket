@@ -1,8 +1,8 @@
 package jsocket.server;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Map;
 /**
  * Administrador de conexiones de los clientes, donde estan todos los clientes conectados
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com> 
@@ -12,28 +12,33 @@ public class ManagerConections extends Thread{
     private Socket skConexion = null;
     private int key = 1;
     private boolean LISTENING = true;
-        
-    public ManagerConections(){
-        
+    private ServerSocket skServer = null;
+    
+    
+    
+    public ManagerConections(ServerSocket server){
+        skServer = server;
     }
     @Override
     public void run() {
         
         while(LISTENING){
-            JSocketServer.onServerStar();
+            JSocketServer.onServerStar(skServer.getInetAddress().getHostAddress());
             this.conectado();
         }
     }
 
     private void conectado(){
         try{
-            skConexion = JSocketServer.getSkServer().accept();
+            skConexion = skServer.accept();
             
             ComunicationServer comunicacion = new ComunicationServer(skConexion, key);
-            key = key + 1;
             comunicacion.start();
-            JSocketServer.onConnect(key, skConexion.getInetAddress().getHostAddress() + " : " + String.valueOf(skConexion.getPort()));
+            System.out.println("cliente conectado");
+            System.out.println("cliente conectado key : " + String.valueOf(comunicacion.getKey()));
+            JSocketServer.onConnect(comunicacion.getKey(), skConexion.getInetAddress().getHostAddress() + " : " + String.valueOf(skConexion.getPort()));
             JSocketServer.setConnectionClient(comunicacion);
+            key = key + 1;
         }catch(IOException ex){
             System.out.println("Err : ManagerConections.onAccept() " + ex.getMessage());
         }
