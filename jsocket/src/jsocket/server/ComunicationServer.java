@@ -12,14 +12,15 @@ public class ComunicationServer extends Thread{
     private Socket skConexion = null;
     private DataInputStream stRead = null;
     private DataOutputStream stWrite = null;
-
-    private OnConnectedListenerServer listener = null;
+    private int key = 0;
     
-    public ComunicationServer(Socket client, OnConnectedListenerServer listener){
+    public ComunicationServer(Socket client, int key){
         this.skConexion = client;
         this.LISTING = true;
-        this.listener = listener;
-        // keyId = skConexion.getInetAddress().getHostAddress()+ ":" + String.valueOf(skConexion.getPort());
+        this.key = key;
+    }
+    public int getKey(){
+        return this.key;
     }
     /**
      * Proceso que se ejecutara cuando se desencadene una lectura
@@ -36,7 +37,7 @@ public class ComunicationServer extends Thread{
             if(!skConexion.isConnected()){
                 System.out.println("Socket Desconectado");
             }
-            this.onRead();
+            JSocketServer.onRead(this);
         }
     }
     private void getFlujo(){
@@ -59,12 +60,6 @@ public class ComunicationServer extends Thread{
         } catch (IOException e) {
             System.out.println("Error al scribir  datos" + e.getMessage());
         }
-    }
-    /**
-     * Metodo que lanza el evento de lectura del servidor
-     */
-    private void onRead(){
-        listener.onRead(new OnConnectedEventServer(this));
     }
     /**
      * Lee un los datos que llegan del cliente

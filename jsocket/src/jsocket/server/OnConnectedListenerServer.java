@@ -8,43 +8,41 @@ package jsocket.server;
 import java.util.EventListener;
 
 /**
- * Intefaza que escucha los eventos del servidor socket
+ * Interface que escucha los eventos del servidor socket
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
  */
 public interface OnConnectedListenerServer  extends EventListener{
+    
     /**
      * Ocurre cuando el servidor levanta el servicio correctamente
-     * @param sender Referencia [managerConnection]
+     * @param data   Evento que es generado
      */
-    public void onServerStar(OnConnectedEventServer sender);// ya esta mejorado
+    public void onServerStar(OnConnectedEventServer data);
 
     /**
      * Se produce cuando un cliente se conecta al servidor
-     * @param sender Referencia Mensaje que se genera [String]
+     * @param sender Referencia del objeto que esta generando el evento
+     * @param data   Evento que es generado
      * */
-    public void onConnect(OnConnectedEventServer sender); // ya esta mejorado
+    public void onConnect(Object sender, OnConnectedEventServer data);
 
     /**
      * Se produce cuando un cliente se desconecta del servidor
      * @param sender Referencia del objeto que esta generando el evento
+     * @param data   Evento que es generado
      * */
-    public void onDisconnect(OnConnectedEventServer sender);	
-
-    /**
-     * Se produce cuando se ocurre un error dentro del socket
-     * @param msg mensaje de error
-     * */
-    public void onError(String msg); // no esta siendo utilizado
+    public void onDisconnect(Object sender, OnConnectedEventServer data);	
 
     /**
      * Se produce cuando llegan mensajes del cliente
-     * @param sender Referencia del objeto [ComunicationServer] 
+     * @param sender Referencia del objeto que genera el evento
+     * @param data   Evento que es generado [ComunicationServer]
      * */
-    public void onRead(OnConnectedEventServer sender); // ya esta mejorado
-        // los que tengan X estan ya solucionado
+    public void onRead(Object sender, OnConnectedEventServer data); 
+    
     /**
      * Se produce cuando se envia mensaje al servidor
      * @param sender Referencia al EventObject [managerConections]
      * */
-    public void onWrite(OnConnectedEventServer sender); // ya esta mejorado
+    //public void onWrite(OnConnectedEventServer sender); // ya esta mejorado
 }

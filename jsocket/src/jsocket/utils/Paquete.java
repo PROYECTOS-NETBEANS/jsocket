@@ -5,56 +5,12 @@
  */
 package jsocket.utils;
 
-import jsocket.utils.TipoMensaje;
-
-public class Package {
+public class Paquete {
+    public int key;
+    public String msg;
     
-    /**
-     * Mensaje enviado
-     */
-    private String msg;
-    /**
-     * Hacia donde va dirigido el mensaje [privado o publico]
-     */
-    private TipoMensaje address;
-    /**
-     * Nombre de usuario a donde va dirigido el mensaje
-     */
-    private String nickAddress;
-    /**
-     * Nombre de usuario que envia el mensaje
-     */
-    private String nickName;
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
+    public Paquete(String msg, int key){
+        this.key = key;
         this.msg = msg;
     }
-
-    public TipoMensaje getAddress() {
-        return address;
-    }
-
-    public void setAddress(TipoMensaje address) {
-        this.address = address;
-    }
-
-    public String getNickAddress() {
-        return nickAddress;
-    }
-
-    public void setNickAddress(String nickAddress) {
-        this.nickAddress = nickAddress;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }    
 }

@@ -13,9 +13,8 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
     private DefaultListModel modelo = null;
     private DefaultListModel modeloUsuario = null;
     private JSocketServer servidor = null;
-    /**
-     * Creates new form Servidor
-     */
+
+    
     @SuppressWarnings("LeakingThisInConstructor")
     public Servidor() {
         initComponents();
@@ -122,8 +121,8 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
      * Activamos el evento de envio de mensaje
      */
     private void enviarMensaje(){
-        this.addMessageList(txtMensaje.getText());
-        servidor.onWrite();
+        //this.addMessageList(txtMensaje.getText());
+        //servidor.onWrite();
     }
     private void addMessageList(String msg){
         modelo.addElement(msg);
@@ -177,32 +176,28 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void onServerStar(OnConnectedEventServer sender) {
-        this.lblEstado.setText("ESTADO DE SERVIDOR:>> INICIADO");
+    public void onServerStar(OnConnectedEventServer data) {
+        this.lblEstado.setText("SERVIDOR INICIADO EN LA IP : " + data.getIpServer());
     }
 
     @Override
-    public void onConnect(OnConnectedEventServer sender) {
-        this.addUsuarioList(sender.getIpClient());
+    public void onConnect(Object sender, OnConnectedEventServer data) {
+        //this.addUsuarioList(sender.getIpClient());
     }
 
     @Override
-    public void onDisconnect(OnConnectedEventServer sender) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void onDisconnect(Object sender, OnConnectedEventServer data) {
+        
     }
 
     @Override
-    public void onError(String msg) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void onRead(Object sender, OnConnectedEventServer data) {
+        //this.addMessageList(sender.getDatos());
     }
 
-    @Override
-    public void onRead(OnConnectedEventServer sender, String keyClient) {
-        this.addMessageList(sender.getDatos());
-    }
-
+    /*
     @Override
     public void onWrite(OnConnectedEventServer sender) {
         sender.sendMessageAll(txtMensaje.getText());
-    }
+    }*/
 }

@@ -12,7 +12,7 @@ public class OnConnectedEventServer extends EventObject{
         super(source);
     }
     /**
-     * Funcion que devuelve los datos llegados del cliente
+     * Funcion que devuelve los datos llegados del cliente 
      * @return String : datos devuelto del cliente
      */
     public String getDatos(){
@@ -24,16 +24,18 @@ public class OnConnectedEventServer extends EventObject{
     /**
      * Metodo que envia mensajes a todos los clientes que estan conectados
      * @param msg Mensaje que se enviara a los clientes conectados
-     */
+     *
     public void sendMessageAll(String msg){
         if(this.getSource() instanceof ManagerConections)
             ((ManagerConections) this.getSource()).sendMessageAll(msg);
     }
+    */
+    
     /**
-     * Devuelve la ip del usuario conectado
+     * Devuelve la ip del servidor despues de iniciar el servidor
      * @return String
      */
-    public String getIpClient(){
+    public String getIpServer(){
         if(this.getSource() instanceof String)
             return this.getSource().toString();
         else
