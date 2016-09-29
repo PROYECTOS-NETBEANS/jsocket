@@ -3,6 +3,8 @@ package jsocket.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  * Administrador de conexiones de los clientes, donde estan todos los clientes conectados
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com> 
@@ -22,29 +24,47 @@ public class ManagerConections extends Thread{
     @Override
     public void run() {
         
-        while(LISTENING){
-            JSocketServer.onServerStar(skServer.getInetAddress().getHostAddress());
-            this.conectado();
+        JSocketServer.onServerStar(skServer.getInetAddress().getHostAddress());
+        
+        while(LISTENING){            
+            this.esperandoConexiones();
         }
+        
     }
-
-    private void conectado(){
+    /**
+     * Metodo qu espera las conexiones de clientes
+     */
+    private void esperandoConexiones(){
         try{
             skConexion = skServer.accept();
             
             ComunicationServer comunicacion = new ComunicationServer(skConexion, key);
             comunicacion.start();
-            System.out.println("cliente conectado");
-            System.out.println("cliente conectado key : " + String.valueOf(comunicacion.getKey()));
             JSocketServer.onConnect(comunicacion.getKey(), skConexion.getInetAddress().getHostAddress() + " : " + String.valueOf(skConexion.getPort()));
             JSocketServer.setConnectionClient(comunicacion);
             key = key + 1;
         }catch(IOException ex){
-            System.out.println("Err : ManagerConections.onAccept() " + ex.getMessage());
+            System.out.println("[ManagerConections.esperandoConexiones] " + ex.getMessage());
         }
     }
+    /**
+     * Detiene el escuchador de cliente
+     */
     public void detenerServicio(){
-      // aqui tendremos todas las opciones para la detencion   
+        LISTENING = false;
+        this.cerrarConexion();
+        System.out.println("pase managerConections.detenerServicio");
+    }
+    /**
+     * Metodo que cierra la conexion del servidor
+     */
+    private void cerrarConexion(){
+        try {
+            this.skServer.close();
+            System.out.println("pase ManagerConection.cerrarConexion");
+        } catch (IOException ex) {
+            System.out.println("[ManagerConection.cerrarConexion] " + ex.getMessage());
+        }
     }
     /**
      * Envia un mensaje a todos los clientes conectados

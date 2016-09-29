@@ -34,14 +34,18 @@ public class ComunicationClient extends Thread{
         this.getFlujo();
         
         while(LISTING){
-            if(!skConexion.isClosed()){
-                // aqui tengo que lanzar una excepcion
+            try {
+                if(!skConexion.isClosed()){
+                    // aqui tengo que lanzar una excepcion
+                }
+                if(!skConexion.isConnected()){
+                    // aqui tengo que lanzar una excepcion
+                }
+                sleep(1000);
+                this.onRead();
+            } catch (InterruptedException ex) {
+                System.out.println("error : cliente run" + ex.getMessage());
             }
-            if(!skConexion.isConnected()){
-                // aqui tengo que lanzar una excepcion
-            }
-
-            this.onRead();
         }
     }
     /**

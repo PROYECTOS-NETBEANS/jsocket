@@ -51,6 +51,11 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         lstLista.setName(""); // NOI18N
         jScrollPane1.setViewportView(lstLista);
@@ -138,6 +143,11 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // al cerrar el formulario detenemos el servicio
+        server.detenerServicio();
+    }//GEN-LAST:event_formWindowClosing
     /**
      * Activamos el evento de envio de mensaje
      */
@@ -222,12 +232,12 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
 
     @Override
     public void onDisconnect(Object sender, OnConnectedEventServer data) {
+        
         if(data.getClientDisconnect()){
-            server.detenerServicio();
-            System.out.println("key : " + String.valueOf(data.getKeyClient()));
+            System.out.println("vista.onDisconnect >> key : " + String.valueOf(data.getKeyClient()));
+            JSocketServer.removeConnectionClients(data.getKeyClient());           
             this.removerUsuario(data.getKeyClient());
         }
-            
     }
 
     @Override

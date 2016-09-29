@@ -3,6 +3,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  * clase escuchador que envia y recibe los mensajes que llegan de los clientes
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
@@ -14,6 +16,11 @@ public class ComunicationServer extends Thread{
     private DataOutputStream stWrite = null;
     private int key = 0;
     
+    /**
+     * Constructor del escuchador de mensajes del cliente
+     * @param client canal de comunicacion con el cliente
+     * @param key Identificador unico de cliente
+     */
     public ComunicationServer(Socket client, int key){
         this.skConexion = client;
         this.LISTING = true;
@@ -31,17 +38,24 @@ public class ComunicationServer extends Thread{
         this.getFlujo();
         // escuchando los paquetes que el servidor enviará        
         while(LISTING){
-            this.leerDatos();
+            try{
+                this.leerDatos();
+            }catch(Exception e){
+                System.out.println("[ComunicationsServer.run] " + e.getMessage());
+            }
+            
         }
     }
-    
+    /**
+     * Obtiene los flujos la primera vez que inicia y empieza a escuchar
+     */
     private void getFlujo(){
         try{
             stRead = new DataInputStream(skConexion.getInputStream());
             stWrite = new DataOutputStream(skConexion.getOutputStream());
             stWrite.flush();
         }catch(IOException e){
-            System.out.println(e.getMessage());
+            System.out.println("[ComunicationServer.getFlujo] " + e.getMessage());
         }
     }
    /**
@@ -53,11 +67,13 @@ public class ComunicationServer extends Thread{
             stWrite.writeUTF(msg);
             stWrite.flush();
         } catch (IOException e) {
-            System.out.println("Error al scribir  datos" + e.getMessage());
+            System.out.println("[ComunicationServer.escribirDatos] " + e.getMessage());
+            this.cerrarConexion();
+            JSocketServer.onDisconnect(this.getKey());
         }
     }
     /**
-     * Metodo que lee los datos que llegan del servidor
+     * Metodo que lee los datos que llegan del cliente
      */
     private void leerDatos(){
         try{
@@ -65,8 +81,7 @@ public class ComunicationServer extends Thread{
             System.out.println("antes del evento on read (leerDatos)");
             JSocketServer.onRead(this.key, msg);
         }catch(IOException e){
-            System.out.println("Error : ComunicationServer.leerDatos() key : " + String.valueOf(this.key));
-            this.cerrarConexion();
+            System.out.println("[ComunicationServer.leerDatos] " + e.getMessage());
             JSocketServer.onDisconnect(this.key);
         }
     }
@@ -78,9 +93,9 @@ public class ComunicationServer extends Thread{
             stRead.close();
             stWrite.close();
             skConexion.close();
-            this.detenerEscuchador();
+            System.out.println("pase comunicationServer.cerrarConexion");
         } catch (IOException e) {
-            System.out.println("ComunicationServer.cerrarConexion() : " + e.getMessage());
+            System.out.println("[ComunicationServer.cerrarConexion] " + e.getMessage());
         }
     }
     /**
@@ -88,5 +103,7 @@ public class ComunicationServer extends Thread{
      */
     public void detenerEscuchador(){
         this.LISTING = false;
+        this.cerrarConexion();
+        System.out.println("pase comunicationServer.detenerEscuchador");
     }
 }
