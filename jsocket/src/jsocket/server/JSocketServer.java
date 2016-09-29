@@ -31,6 +31,11 @@ public class JSocketServer {
             System.out.println("error al iniciar el socket server " + e.getMessage());
         }
     }
+    /**
+     * Metodo que devuelve el hilo escuchador cliente, a partir de una key
+     * @param keyValue Llave con la que se buscara
+     * @return
+     */
     public static ComunicationServer getConnectionsClient(int keyValue){
         if(clientHashMap == null){
             clientHashMap = new HashMap<>();
@@ -39,12 +44,20 @@ public class JSocketServer {
             return clientHashMap.get(keyValue);
         }
     }
+    /**
+     * Guarda el escuchador en la lista de escuchadores
+     * @param conexion 
+     */
     public static void setConnectionClient(ComunicationServer conexion){
         if(clientHashMap == null){
             clientHashMap = new HashMap<>();
         }
         clientHashMap.put(conexion.getKey(), conexion);
     }
+    /**
+     * Elimina un escuchador de la lista, a partir de una llave key
+     * @param key Valor unico mediante el cual se buscara en la lista
+     */
     public static void removeConnectionClient(int key){
         ComunicationServer conexion = clientHashMap.get(key);
         conexion.detenerEscuchador();
@@ -69,6 +82,7 @@ public class JSocketServer {
     
     /**
      * Metodo que lanza el evento cuando se inicia el servicio del servidor
+     * @param direccion Es la direccion ip del usuario que acaba de conectarse
      */
     public static void onServerStar(String direccion){
         Object[] listeners = listenerList.getListenerList();
@@ -83,6 +97,8 @@ public class JSocketServer {
 
      /**
      * Metodo que lanza el evento de lectura del servidor
+     * @param key Identificador unico del cliente que esta enviando el mensaje
+     * @param msg Mensaje enviado por el cliente.
      */
     public static void onRead(int key, String msg){
         Object[] listeners = listenerList.getListenerList();

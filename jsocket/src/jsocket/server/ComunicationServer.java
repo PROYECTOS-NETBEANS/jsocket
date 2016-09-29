@@ -76,16 +76,16 @@ public class ComunicationServer extends Thread{
     private void cerrarConexion(){
         try {
             stRead.close();
-            System.out.println("cierre de st read");
             stWrite.close();
-            System.out.println("cierre de st write");
             skConexion.close();
-            System.out.println("cierre de socket");
             this.detenerEscuchador();
         } catch (IOException e) {
             System.out.println("ComunicationServer.cerrarConexion() : " + e.getMessage());
         }
     }
+    /**
+     * Detiene el escuchador
+     */
     public void detenerEscuchador(){
         this.LISTING = false;
     }

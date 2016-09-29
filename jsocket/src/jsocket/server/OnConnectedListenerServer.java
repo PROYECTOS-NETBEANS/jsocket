@@ -41,7 +41,7 @@ public interface OnConnectedListenerServer  extends EventListener{
     public void onRead(Object sender, OnConnectedEventServer data); 
     
     /**
-     * Se produce cuando se envia mensaje al servidor
+     * Se produce cuando se envia mensaje desde el servidor a los clientes
      * @param sender Referencia al EventObject [managerConections]
      * */
     //public void onWrite(OnConnectedEventServer sender); // ya esta mejorado
