@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.EventListener;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import javax.swing.event.EventListenerList;
 import jsocket.utils.Paquete;
 import jsocket.utils.TipoMsg;
@@ -160,12 +162,20 @@ public class JSocketServer {
     public void detenerServicio(){
         try{
             System.out.println("deten 1 ");
-            aqui cambiar por otra recorrido
+            Iterator it = JSocketServer.clientHashMap.entrySet().iterator();
+            while(it.hasNext()){
+                Map.Entry entry = (Map.Entry) it.next();
+                int keyValue = entry.getKey();
+                ver alto
+                it.remove();
+            }
+            
+            /*
             for(Integer key : JSocketServer.clientHashMap.keySet()){
                 System.out.println("antes detener 1");
                 JSocketServer.onDisconnect(key);
                 System.out.println("antes detener 2");
-            }
+            }*/
             System.out.println("finalizacion de detenerServicio");
             JSocketServer.clientHashMap = null;
         }catch(Exception e){
