@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.EventListener;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import javax.swing.event.EventListenerList;
 import jsocket.utils.Paquete;
 import jsocket.utils.TipoMsg;
@@ -91,9 +89,9 @@ public class JSocketServer {
      */
     public static void onServerStar(String direccion){
         Object[] listeners = JSocketServer.listenerList.getListenerList();
-        for(int i = 0; i<listeners.length; i++){          
-          if(listeners[i] instanceof OnConnectedListenerServer){            
-              OnConnectedEventServer sender = new OnConnectedEventServer(new Paquete(direccion,-1, TipoMsg.MSG_NORMAL));
+        for(int i = 0; i<listeners.length; i++){
+          if(listeners[i] instanceof OnConnectedListenerServer){
+              OnConnectedEventServer sender = new OnConnectedEventServer(new Paquete(direccion, -1, -1, TipoMsg.PQT_SALUDO));
               ((OnConnectedListenerServer)listeners[i]).onServerStar(sender);
           }
         }
@@ -101,15 +99,13 @@ public class JSocketServer {
 
      /**
      * Metodo que lanza el evento de lectura del servidor
-     * @param key Identificador unico del cliente que esta enviando el mensaje
-     * @param msg Mensaje enviado por el cliente.
+     * @param paquete Paquete con la informacion que llega desde el cliente
      */
-    public static void onRead(int key, String msg){
+    public static void onRead(Paquete paquete){
         Object[] listeners = JSocketServer.listenerList.getListenerList();
         for(int i = 0; i<listeners.length; i++){
-          
           if(listeners[i] instanceof OnConnectedListenerServer){
-              OnConnectedEventServer sender = new OnConnectedEventServer(new Paquete(msg, key, TipoMsg.MSG_NORMAL));
+              OnConnectedEventServer sender = new OnConnectedEventServer(paquete);
               ((OnConnectedListenerServer)listeners[i]).onRead("read", sender);
           }
         }       
@@ -120,13 +116,13 @@ public class JSocketServer {
      * @param key identificador del cliente
      * @param msg mensaje del que se enviara
      */
-    public static void onConnect(int key, String msg){
+    public static void onConnect(Paquete paquete){
         Object[] listeners = JSocketServer.listenerList.getListenerList();
         for(int i = 0; i<listeners.length; i++){
           
           if(listeners[i] instanceof OnConnectedListenerServer){
-              System.out.println("jsocketserver.onConnect : key " + String.valueOf(key));
-              OnConnectedEventServer sender = new OnConnectedEventServer(new Paquete(msg, key, TipoMsg.MSG_NORMAL));
+              System.out.println("jsocketserver.onConnect : key " + String.valueOf(paquete.getOrigen()));
+              OnConnectedEventServer sender = new OnConnectedEventServer(paquete);
               ((OnConnectedListenerServer)listeners[i]).onConnect("onconnected", sender);
           }
         }
@@ -136,12 +132,12 @@ public class JSocketServer {
      * Metodo que lanza el evento de desconexion
      * @param key El identificador del cliente que se desconecto
      */
-    public static void onDisconnect(int key){
+    public static void onDisconnect(Paquete paquete){
         Object[] listeners = JSocketServer.listenerList.getListenerList();
         for(int i = 0; i<listeners.length; i++){
           if(listeners[i] instanceof OnConnectedListenerServer){
               System.out.println("pase onDisconect 1");
-              OnConnectedEventServer sender = new OnConnectedEventServer(new Paquete("Desconectado", key, TipoMsg.MSG_DESCONECTADO));
+              OnConnectedEventServer sender = new OnConnectedEventServer(paquete);
               System.out.println("pase onDisconect 2");
               ((OnConnectedListenerServer)listeners[i]).onDisconnect("disconnect", sender);
               System.out.println("pase onDisconect 3");
@@ -162,6 +158,7 @@ public class JSocketServer {
     public void detenerServicio(){
         try{
             System.out.println("deten 1 ");
+            /*
             Iterator it = JSocketServer.clientHashMap.entrySet().iterator();
             while(it.hasNext()){
                 Map.Entry entry = (Map.Entry) it.next();
@@ -169,13 +166,16 @@ public class JSocketServer {
                 ver alto
                 it.remove();
             }
+            */
             
-            /*
+            int i = 1;
             for(Integer key : JSocketServer.clientHashMap.keySet()){
-                System.out.println("antes detener 1");
-                JSocketServer.onDisconnect(key);
-                System.out.println("antes detener 2");
-            }*/
+                //System.out.println("antes detener 1");
+                //JSocketServer.onDisconnect(key);
+                JSocketServer.removeConnectionClients(key);
+                System.out.println("inde : " + String.valueOf(i));
+                System.out.println(" count : " + String.valueOf(JSocketServer.getClients().size()));
+            }
             System.out.println("finalizacion de detenerServicio");
             JSocketServer.clientHashMap = null;
         }catch(Exception e){

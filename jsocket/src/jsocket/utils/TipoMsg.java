@@ -13,6 +13,6 @@ package jsocket.utils;
 public enum TipoMsg {
     MSG_PUBLICO,
     MSG_PRIVADO,
-    MSG_DESCONECTADO,
-    MSG_NORMAL
+    PQT_DESCONECTADO,
+    PQT_SALUDO
 }

@@ -4,7 +4,11 @@ package jsocket.client;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
+import jsocket.utils.Paquete;
+import jsocket.utils.TipoMsg;
 /**
  * Clase escuchador que envia y recibe mensajes del servidor
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
@@ -12,20 +16,18 @@ import java.net.Socket;
 public class ComunicationClient extends Thread{
     
     private Socket skConexion = null;
-    private DataInputStream stRead = null;
-    private DataOutputStream stWrite = null;
+    private ObjectInputStream stRead = null;
+    private ObjectOutputStream stWrite = null;
     private boolean LISTING = true;
-    private OnConnectedListenerClient listener;
     
     /**
      * Constructor del escuchador que se comunica con el cliente
      * @param conexion Socket de comunicacion con el servidor
      * @param listener Escuchador de eventos del cliente
      */
-    public ComunicationClient(Socket conexion, OnConnectedListenerClient listener){
+    public ComunicationClient(Socket conexion){
         this.LISTING = true;
         this.skConexion = conexion;
-        this.listener = listener;
     }
     
     @Override
@@ -34,38 +36,34 @@ public class ComunicationClient extends Thread{
         this.getFlujo();
         
         while(LISTING){
-            try {
-                if(!skConexion.isClosed()){
-                    // aqui tengo que lanzar una excepcion
-                }
-                if(!skConexion.isConnected()){
-                    // aqui tengo que lanzar una excepcion
-                }
-                sleep(1000);
-                this.onRead();
-            } catch (InterruptedException ex) {
-                System.out.println("error : cliente run" + ex.getMessage());
+            if(!skConexion.isClosed()){
+                // aqui tengo que lanzar una excepcion
             }
+            if(!skConexion.isConnected()){
+                // aqui tengo que lanzar una excepcion
+            }
+            this.leerDatos();
         }
     }
     /**
-     * Devuelve los datos que llegan del servidor
-     * @return String
-     */   
-    public String getDatos(){
-        try {
-            return stRead.readUTF();
-        } catch (IOException e) {
-            System.out.println("Error en ComunicationClient.getDatos : " + e.getMessage());
-            return "";
-        }
+     * Metodo que lee los datos que llegan del servidor
+    */
+    private void leerDatos(){
+        try{
+            Paquete paquete = (Paquete) stRead.readObject();
+            System.out.println("antes del evento on read (leerDatos)");
+            JSocketClient.onRead(paquete);
+        }catch(IOException e){
+            System.out.println("entre a desconectar [ComunicationServer.leerDatos] " + e.getMessage());
+            this.desconectado();
+        } catch (ClassNotFoundException ex) {
+            System.out.println("[ComunicationServer.leerDatos] " + ex.getMessage());
+        }        
     }
-    /**
-     * Metodo que lanza el evento de lectura cuando llega un mensaje
-     */
-    private void onRead(){
-        listener.OnRead(new OnConnectedEventClient(this));
+    private void desconectado(){
+        JSocketClient.onDisconnect(new Paquete("desconectado", -1, -1, TipoMsg.PQT_DESCONECTADO));
     }
+    
     /**
      * Metodo que envia un mensaje al servidor
      * @param msg Mensaje a enviarse al servidor
@@ -85,11 +83,11 @@ public class ComunicationClient extends Thread{
      */
     private void getFlujo(){
         try{
-            stRead = new DataInputStream(skConexion.getInputStream());
-            stWrite = new DataOutputStream(skConexion.getOutputStream());
+            stRead = new ObjectInputStream(skConexion.getInputStream());
+            stWrite = new ObjectOutputStream(skConexion.getOutputStream());
             stWrite.flush();
          }catch(IOException e){
-            System.out.println(e.getMessage());
+            System.out.println("[ComunicationClient.getFlujo] " + e.getMessage());
         }
     }
 

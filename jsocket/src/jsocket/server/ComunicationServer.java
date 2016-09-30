@@ -1,10 +1,12 @@
 package jsocket.server;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jsocket.utils.Paquete;
+import jsocket.utils.TipoMsg;
 /**
  * clase escuchador que envia y recibe los mensajes que llegan de los clientes
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
@@ -12,8 +14,8 @@ import java.util.logging.Logger;
 public class ComunicationServer extends Thread{
     private boolean LISTING = true;
     private Socket skConexion = null;
-    private DataInputStream stRead = null;
-    private DataOutputStream stWrite = null;
+    private ObjectInputStream stRead = null;
+    private ObjectOutputStream stWrite = null;
     private int key = 0;
     
     /**
@@ -51,8 +53,8 @@ public class ComunicationServer extends Thread{
      */
     private void getFlujo(){
         try{
-            stRead = new DataInputStream(skConexion.getInputStream());
-            stWrite = new DataOutputStream(skConexion.getOutputStream());
+            stRead = new ObjectInputStream(skConexion.getInputStream());
+            stWrite = new ObjectOutputStream(skConexion.getOutputStream());
             stWrite.flush();
         }catch(IOException e){
             System.out.println("[ComunicationServer.getFlujo] " + e.getMessage());
@@ -69,20 +71,25 @@ public class ComunicationServer extends Thread{
         } catch (IOException e) {
             System.out.println("[ComunicationServer.escribirDatos] " + e.getMessage());
             this.cerrarConexion();
-            JSocketServer.onDisconnect(this.getKey());
+            this.desconectado();
         }
+    }
+    private void desconectado(){
+        JSocketServer.onDisconnect(new Paquete("desconectado", this.key, this.key, TipoMsg.PQT_DESCONECTADO));
     }
     /**
      * Metodo que lee los datos que llegan del cliente
      */
     private void leerDatos(){
         try{
-            String msg = stRead.readUTF();
+            Paquete paquete = (Paquete) stRead.readObject();
             System.out.println("antes del evento on read (leerDatos)");
-            JSocketServer.onRead(this.key, msg);
+            JSocketServer.onRead(paquete);
         }catch(IOException e){
-            System.out.println("[ComunicationServer.leerDatos] " + e.getMessage());
-            JSocketServer.onDisconnect(this.key);
+            System.out.println("entre a desconectar [ComunicationServer.leerDatos] " + e.getMessage());
+            this.desconectado();
+        } catch (ClassNotFoundException ex) {
+            System.out.println("[ComunicationServer.leerDatos] " + ex.getMessage());
         }
     }
     /**

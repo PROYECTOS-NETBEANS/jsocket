@@ -5,8 +5,6 @@ import javax.swing.DefaultListModel;
 import jsocket.server.JSocketServer;
 import jsocket.server.OnConnectedEventServer;
 import jsocket.server.OnConnectedListenerServer;
-import jsocket.utils.Paquete;
-import jsocket.utils.TipoMsg;
 /**
  * 
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
@@ -141,7 +139,7 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
     }//GEN-LAST:event_btnEnviarActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
+        System.out.println("Count Client" + String.valueOf(JSocketServer.getClients().size()));
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -157,8 +155,8 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
     }
     private void removerUsuario(int key){
         for(int i = 0; i < usuarios.getSize(); i++){
-            Paquete p = (Paquete) usuarios.get(i);
-            if(p.getKey() == key){
+            Usuario u = (Usuario) usuarios.get(i);
+            if(u.getKey() == key){
                 usuarios.remove(i);
                 lstUsuarios.setModel(usuarios);
                 this.repaint();
@@ -171,8 +169,8 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
         modelo.addElement(msg);
         lstLista.setModel(modelo);
     }
-    private void addUsuarioList(Paquete p){
-        usuarios.addElement(p);
+    private void addUsuarioList(Usuario usr){
+        usuarios.addElement(usr);
         lstUsuarios.setModel(usuarios);
     }
     /**
@@ -226,23 +224,23 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
 
     @Override
     public void onConnect(Object sender, OnConnectedEventServer data){
-        System.out.println("key conect : " + String.valueOf(data.getKeyClient()));
-        this.addUsuarioList(new Paquete(data.getMessageClient(), data.getKeyClient(), TipoMsg.MSG_NORMAL));
+        System.out.println("key conect : " + String.valueOf(data.getOrigenClient()));
+        this.addUsuarioList(new Usuario(data.getOrigenClient(), data.getMessageClient(), data.getMessageClient()));
     }
 
     @Override
     public void onDisconnect(Object sender, OnConnectedEventServer data) {
         
         if(data.getClientDisconnect()){
-            System.out.println("vista.onDisconnect >> key : " + String.valueOf(data.getKeyClient()));
-            JSocketServer.removeConnectionClients(data.getKeyClient());           
-            this.removerUsuario(data.getKeyClient());
+            System.out.println("vista.onDisconnect >> key : " + String.valueOf(data.getOrigenClient()));
+            JSocketServer.removeConnectionClients(data.getOrigenClient());
+            this.removerUsuario(data.getOrigenClient());
         }
     }
 
     @Override
     public void onRead(Object sender, OnConnectedEventServer data) {
-        System.out.println("entre a mensaje : " + String.valueOf(data.getKeyClient()));
+        System.out.println("entre a mensaje : " + String.valueOf(data.getOrigenClient()));
         
         this.addMessageList(data.getMessageClient());
     }
@@ -252,4 +250,33 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
     public void onWrite(OnConnectedEventServer sender) {
         sender.sendMessageAll(txtMensaje.getText());
     }*/
+}
+class Usuario{
+    private int key;
+    private String userName;
+    private String ip;
+    /**
+     * Constructor de clase
+     * @param key identificador unico de usuario
+     * @param userName nombre de usuario de la persona que acaba de conectarse
+     * @param ip ip del cliente que se conecto
+     */
+    public Usuario(int key, String userName, String ip){
+        this.key = key;
+        this.userName = userName;
+        this.ip = ip;
+    }
+    public int getKey(){
+        return this.key;
+    }
+    public String getUserName(){
+        return this.userName;
+    }
+    public String getIp(){
+        return this.ip;
+    }
+    @Override
+    public String toString(){
+        return this.ip;
+    }
 }

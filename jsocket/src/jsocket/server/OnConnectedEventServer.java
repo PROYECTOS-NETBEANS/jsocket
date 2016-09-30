@@ -35,9 +35,24 @@ public class OnConnectedEventServer extends EventObject{
             return "Ip no encontrada !!";
         }
     }
-    public int getKeyClient(){
+    /**
+     * Obtiene el identificador de cliente que envio el mensaje
+     * @return Identificador del cliente que origino el mensaje
+     */
+    public int getOrigenClient(){
         if(this.getSource() instanceof Paquete){
-            return ((Paquete) this.getSource()).getKey();
+            return ((Paquete) this.getSource()).getOrigen();
+        }else{
+            return 0;
+        }
+    }
+    /**
+     * Obtiene la key del cliente a donde va dirigido el mensaje
+     * @return Identificador del cliente destinatario
+     */
+    public int getDestinoClient(){
+        if(this.getSource() instanceof Paquete){
+            return ((Paquete) this.getSource()).getDestino();
         }else{
             return 0;
         }
@@ -59,7 +74,7 @@ public class OnConnectedEventServer extends EventObject{
      */
     public boolean getClientDisconnect(){
         if(this.getSource() instanceof Paquete){
-            return (((Paquete) this.getSource()).getTipoMsg() == TipoMsg.MSG_DESCONECTADO);
+            return (((Paquete) this.getSource()).getTipoMsg() == TipoMsg.PQT_DESCONECTADO);
         }else{
             return false;
         }        

@@ -26,7 +26,7 @@ public class Cliente extends javax.swing.JFrame implements OnConnectedListenerCl
         initComponents();
         modelo = new DefaultListModel();
         
-        cliente = new JSocketClient(5555, "192.168.0.108");
+        cliente = new JSocketClient(5555, "192.168.0.100");
         cliente.addEventListener(this);
         cliente.conectarServidor();
     }
@@ -141,12 +141,12 @@ public class Cliente extends javax.swing.JFrame implements OnConnectedListenerCl
     }//GEN-LAST:event_btnEnviarActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        cliente.desconectarServidor();
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void enviarMensaje(){
         this.addMessageList(txtMensaje.getText());
-        cliente.onWrite();
+        //cliente.onWrite();
     }
     private void addMessageList(String msg){
         modelo.addElement(msg);
@@ -201,27 +201,22 @@ public class Cliente extends javax.swing.JFrame implements OnConnectedListenerCl
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void onConnect(OnConnectedEventClient sender) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void onDisconnect(Object sender, OnConnectedEventClient data){
+        
     }
 
     @Override
-    public void onDisconnect(OnConnectedEventClient sender) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void onConnect(Object sender, OnConnectedEventClient data){
+        
     }
 
     @Override
-    public void onError(String msg) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void onRead(Object sender, OnConnectedEventClient data){
+        
     }
 
     @Override
-    public void OnRead(OnConnectedEventClient sender) {
-        this.addMessageList(sender.getDatos());
-    }
-
-    @Override
-    public void onWrite(OnConnectedEventClient sender) {
-        sender.sendMessage(txtMensaje.getText());
+    public void onWrite(Object sender, OnConnectedEventClient data){
+        
     }
 }

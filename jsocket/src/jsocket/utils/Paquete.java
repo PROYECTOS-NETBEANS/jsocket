@@ -4,23 +4,36 @@
  * and open the template in the editor.
  */
 package jsocket.utils;
+import java.io.Serializable;
 
-public class Paquete {
+public class Paquete implements Serializable{
     
-    private int key;
-    private String msg;
-    private TipoMsg tpMsg;
+    private int keyOrigen = 0;
+    private int keyDestino = 0;
+    private String msg = "";
+    private TipoMsg tpMsg ;
     
-    public Paquete(String msg, int key, TipoMsg tp){
-        this.key = key;
+    /**
+     * Constructor de paquete que se enviara entre usuarios
+     * @param msg Mensaje del paquete
+     * @param keyOrigen Key del cliente que creo el mensaje
+     * @param keyDestino Identificador del  cliente a donde se enviara el mensaje
+     * @param tp Tipo de paquete
+     */
+    public Paquete(String msg, int keyOrigen, int keyDestino, TipoMsg tp){
+        this.keyOrigen = keyOrigen;
+        this.keyDestino = keyDestino;
         this.msg = msg;
         this.tpMsg = tp;
     }
     public String getMsg(){
         return this.msg;
     }
-    public int getKey(){
-        return this.key;
+    public int getOrigen(){
+        return this.keyOrigen;
+    }
+    public int getDestino(){
+        return this.keyDestino;
     }
     public TipoMsg getTipoMsg(){
         return this.tpMsg;

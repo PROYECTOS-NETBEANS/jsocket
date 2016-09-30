@@ -3,8 +3,8 @@ package jsocket.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import jsocket.utils.Paquete;
+import jsocket.utils.TipoMsg;
 /**
  * Administrador de conexiones de los clientes, donde estan todos los clientes conectados
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com> 
@@ -39,13 +39,22 @@ public class ManagerConections extends Thread{
             skConexion = skServer.accept();
             
             ComunicationServer comunicacion = new ComunicationServer(skConexion, key);
+            this.usuarioConectado(comunicacion);
             comunicacion.start();
-            JSocketServer.onConnect(comunicacion.getKey(), skConexion.getInetAddress().getHostAddress() + " : " + String.valueOf(skConexion.getPort()));
-            JSocketServer.setConnectionClient(comunicacion);
+            
             key = key + 1;
         }catch(IOException ex){
             System.out.println("[ManagerConections.esperandoConexiones] " + ex.getMessage());
         }
+    }
+    /**
+     * Metodo que llama al evento del escuchador
+     * @param comunicacion 
+     */
+    private void usuarioConectado(ComunicationServer comunicacion){
+        String ip = skConexion.getInetAddress().getHostAddress() + " : " + String.valueOf(skConexion.getPort());
+        JSocketServer.onConnect(new Paquete(ip, comunicacion.getKey(), comunicacion.getKey(), TipoMsg.PQT_SALUDO));
+        JSocketServer.setConnectionClient(comunicacion);
     }
     /**
      * Detiene el escuchador de cliente
