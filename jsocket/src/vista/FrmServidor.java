@@ -9,7 +9,7 @@ import jsocket.server.OnConnectedListenerServer;
  * 
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
  */
-public class Servidor extends javax.swing.JFrame implements OnConnectedListenerServer{
+public class FrmServidor extends javax.swing.JFrame implements OnConnectedListenerServer{
 
     private DefaultListModel modelo = null;
     
@@ -18,7 +18,7 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
     private JSocketServer server = null;
     
     @SuppressWarnings("LeakingThisInConstructor")
-    public Servidor() {
+    public FrmServidor() {
         
         initComponents();
         modelo = new DefaultListModel();
@@ -190,8 +190,9 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Servidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmServidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
         
         //</editor-fold>
@@ -199,7 +200,7 @@ public class Servidor extends javax.swing.JFrame implements OnConnectedListenerS
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Servidor().setVisible(true);
+                new FrmServidor().setVisible(true);
             }
         });
     }

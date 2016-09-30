@@ -6,6 +6,7 @@
 package vista;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import jsocket.client.JSocketClient;
 import jsocket.client.OnConnectedListenerClient;
 import jsocket.client.OnConnectedEventClient;
@@ -14,7 +15,7 @@ import jsocket.client.OnConnectedEventClient;
  *
  * @author Alex Limbert
  */
-public class Cliente extends javax.swing.JFrame implements OnConnectedListenerClient{
+public class FrmCliente extends javax.swing.JFrame implements OnConnectedListenerClient{
 
    private DefaultListModel modelo = null;
    private JSocketClient cliente = null;
@@ -22,15 +23,21 @@ public class Cliente extends javax.swing.JFrame implements OnConnectedListenerCl
     /**
      * Creates new form Cliente
      */
-    public Cliente() {
+    public FrmCliente() {
         initComponents();
+        this.inicializar();
+    }
+    private void inicializar(){
+        String nick = "";
+        while(nick.length() <=0 ){
+            nick = JOptionPane.showInputDialog(this, "Ingrese nombre de usuario :", "Autentication", JOptionPane.QUESTION_MESSAGE);
+        }
+        txtnick.setText(nick);
         modelo = new DefaultListModel();
-        
         cliente = new JSocketClient(5555, "192.168.0.100");
         cliente.addEventListener(this);
         cliente.conectarServidor();
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -45,8 +52,7 @@ public class Cliente extends javax.swing.JFrame implements OnConnectedListenerCl
         txtMensaje = new javax.swing.JTextField();
         btnEnviar = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtnick = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
         jLabel4 = new javax.swing.JLabel();
@@ -70,7 +76,7 @@ public class Cliente extends javax.swing.JFrame implements OnConnectedListenerCl
             }
         });
 
-        jLabel3.setText("Nick :");
+        txtnick.setText("Nick :");
 
         jScrollPane2.setViewportView(jList1);
 
@@ -89,12 +95,9 @@ public class Cliente extends javax.swing.JFrame implements OnConnectedListenerCl
                         .addComponent(btnEnviar)
                         .addGap(88, 88, 88))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 394, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
+                            .addComponent(txtnick, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -113,9 +116,7 @@ public class Cliente extends javax.swing.JFrame implements OnConnectedListenerCl
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel3)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtnick)
                     .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -136,8 +137,7 @@ public class Cliente extends javax.swing.JFrame implements OnConnectedListenerCl
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
-        // TODO add your handling code here:
-           enviarMensaje();
+        enviarMensaje();
     }//GEN-LAST:event_btnEnviarActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -145,8 +145,10 @@ public class Cliente extends javax.swing.JFrame implements OnConnectedListenerCl
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void enviarMensaje(){
+        System.out.println("vista entrando enviar mensaje");
         this.addMessageList(txtMensaje.getText());
-        //cliente.onWrite();
+        System.out.println("vista entrando enviar mensaje 2");
+        cliente.sendMessageAll(txtMensaje.getText());
     }
     private void addMessageList(String msg){
         modelo.addElement(msg);
@@ -169,20 +171,23 @@ public class Cliente extends javax.swing.JFrame implements OnConnectedListenerCl
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Cliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Cliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Cliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Cliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Cliente().setVisible(true);
+                new FrmCliente().setVisible(true);
             }
         });
     }
@@ -190,14 +195,13 @@ public class Cliente extends javax.swing.JFrame implements OnConnectedListenerCl
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEnviar;
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JList lstLista;
     private javax.swing.JTextField txtMensaje;
+    private javax.swing.JLabel txtnick;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -212,11 +216,6 @@ public class Cliente extends javax.swing.JFrame implements OnConnectedListenerCl
 
     @Override
     public void onRead(Object sender, OnConnectedEventClient data){
-        
-    }
-
-    @Override
-    public void onWrite(Object sender, OnConnectedEventClient data){
         
     }
 }

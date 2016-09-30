@@ -37,11 +37,11 @@ public class ManagerConections extends Thread{
     private void esperandoConexiones(){
         try{
             skConexion = skServer.accept();
-            
+            System.out.println("usuario conectado : (esperandoConexiones)");
             ComunicationServer comunicacion = new ComunicationServer(skConexion, key);
-            this.usuarioConectado(comunicacion);
             comunicacion.start();
-            
+            this.usuarioConectado(comunicacion);
+
             key = key + 1;
         }catch(IOException ex){
             System.out.println("[ManagerConections.esperandoConexiones] " + ex.getMessage());

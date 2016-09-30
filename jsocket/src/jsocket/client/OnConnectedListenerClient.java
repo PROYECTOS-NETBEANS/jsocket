@@ -24,10 +24,4 @@ public interface OnConnectedListenerClient extends EventListener{
      * */		
     public void onRead(Object sender, OnConnectedEventClient data);
 
-    /**
-     * Se produce cuando se envia un mensaje al servidor
-     * @param sender Referencia del objeto [ComunicationClient]
-     * */			
-    public void onWrite(Object sender, OnConnectedEventClient data); // ya esta mejorado
-
 }

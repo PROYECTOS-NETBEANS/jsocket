@@ -16,7 +16,7 @@ public class JSocketServer {
     private ManagerConections manager = null;
     
     private static HashMap<Integer, ComunicationServer> clientHashMap = null;
-    private static EventListenerList listenerList = null;
+    private static EventListenerList listenerList = new EventListenerList();
 
     private ServerSocket skServer;
     private int puerto = 5555;

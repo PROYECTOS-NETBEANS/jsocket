@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.util.EventListener;
 import javax.swing.event.EventListenerList;
 import jsocket.utils.Paquete;
+import jsocket.utils.TipoMsg;
 /**
  * Clase socket del cliente que envia y recibe mensajes del servidor
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
@@ -21,12 +22,13 @@ public class JSocketClient {
     private Socket skConexion;
 
     private ComunicationClient comunicacion = null;
-    private static EventListenerList listenerList = null;
+    private static EventListenerList listenerList = new EventListenerList();
 
     public JSocketClient(int puerto, String ip){
         this.PUERTO = puerto;
         this.IP_SERVER = ip;
         this.comunicacion = null;
+        listenerList = new EventListenerList();
     }
     /**
      * adiciona un escuchador de eventos a la lista de escuhadores
@@ -78,9 +80,9 @@ public class JSocketClient {
         try {
             skConexion = new Socket(IP_SERVER, PUERTO);
             comunicacion = new ComunicationClient(skConexion);
-            comunicacion.start();       
+            comunicacion.start();
         } catch (IOException e) {
-            System.out.println("Error[jclientSocket.conectarServidor]: " + e.getMessage());
+            System.out.println("[JSocketClient.conectarServidor]: " + e.getMessage());
         }
     }
      /**
@@ -97,14 +99,11 @@ public class JSocketClient {
         }       
     }
     
-    public static void onWrite(Paquete paquete){
-        Object[] listeners = JSocketClient.listenerList.getListenerList();
-        for(int i = 0; i<listeners.length; i++){
-          if(listeners[i] instanceof OnConnectedListenerClient){
-              OnConnectedEventClient sender = new OnConnectedEventClient(paquete);
-              ((OnConnectedListenerClient)listeners[i]).onWrite("onconnected", sender);
-          }
-        }
-
+    public void sendMessagePrivado(String msg, int keyDestino){
+        comunicacion.sendMessage(msg, TipoMsg.MSG_PRIVADO, keyDestino);
+    }
+    public void sendMessageAll(String msg){
+        System.out.println("send message 1");
+        comunicacion.sendMessage(msg, TipoMsg.MSG_PUBLICO, -1);
     }
 }

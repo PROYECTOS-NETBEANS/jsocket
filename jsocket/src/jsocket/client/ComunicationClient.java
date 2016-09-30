@@ -1,8 +1,6 @@
 
 package jsocket.client;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -68,14 +66,15 @@ public class ComunicationClient extends Thread{
      * Metodo que envia un mensaje al servidor
      * @param msg Mensaje a enviarse al servidor
      */
-    public void sendMessage(String msg){
+    public void sendMessage(String msg, TipoMsg tipo, int keyDestino){
         try {
-            stWrite.writeUTF(msg);
+            Paquete paquete = new Paquete(msg, -1, keyDestino, tipo);
+            System.out.println("pase pque");
+            stWrite.writeObject(paquete);
             stWrite.flush();
-            System.out.println("Mensaje enviado al server");
-            
+            System.out.println("Mensaje enviado al servidor");
         } catch (IOException e) {
-            System.out.println("Error : writeData : " + e.getMessage());
+            System.out.println("[ComunicationClient.sendMessage] " + e.getMessage());
         }
     }
     /**
@@ -83,9 +82,15 @@ public class ComunicationClient extends Thread{
      */
     private void getFlujo(){
         try{
+            System.out.println("getflujo entre");
             stRead = new ObjectInputStream(skConexion.getInputStream());
+            System.out.println("stRead pase");
             stWrite = new ObjectOutputStream(skConexion.getOutputStream());
+            System.out.println("stWrite pase");
             stWrite.flush();
+            System.out.println("pase el get-flujo client");
+            if(stWrite== null)
+                System.out.println("stwrite es nulo");
          }catch(IOException e){
             System.out.println("[ComunicationClient.getFlujo] " + e.getMessage());
         }

@@ -32,8 +32,14 @@ public class Paquete implements Serializable{
     public int getOrigen(){
         return this.keyOrigen;
     }
+    public void setOrigen(int value){
+        this.keyOrigen = value;
+    }
     public int getDestino(){
         return this.keyDestino;
+    }
+    public void setDestino(int value){
+        this.keyDestino = value;
     }
     public TipoMsg getTipoMsg(){
         return this.tpMsg;

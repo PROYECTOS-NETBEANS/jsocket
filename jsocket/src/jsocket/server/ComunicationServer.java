@@ -3,8 +3,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jsocket.utils.Paquete;
 import jsocket.utils.TipoMsg;
 /**
@@ -37,10 +35,13 @@ public class ComunicationServer extends Thread{
     @Override
     public void run() {
         // Obtenemos los flujos de datos
+        System.out.println("entre al hilo");
         this.getFlujo();
         // escuchando los paquetes que el servidor enviará        
+        System.out.println("entrando al while");
         while(LISTING){
             try{
+                System.out.println("antes de entrar al metodo");
                 this.leerDatos();
             }catch(Exception e){
                 System.out.println("[ComunicationsServer.run] " + e.getMessage());
@@ -54,7 +55,9 @@ public class ComunicationServer extends Thread{
     private void getFlujo(){
         try{
             stRead = new ObjectInputStream(skConexion.getInputStream());
+            System.out.println("pase st read server");
             stWrite = new ObjectOutputStream(skConexion.getOutputStream());
+            System.out.println("pase st read cliente");
             stWrite.flush();
         }catch(IOException e){
             System.out.println("[ComunicationServer.getFlujo] " + e.getMessage());
@@ -82,11 +85,14 @@ public class ComunicationServer extends Thread{
      */
     private void leerDatos(){
         try{
+            System.out.println("esperando mensajes");
             Paquete paquete = (Paquete) stRead.readObject();
-            System.out.println("antes del evento on read (leerDatos)");
+            System.out.println("mensaje llegado");
+            paquete.setOrigen(this.key);
+            System.out.println("enviando al evento");
             JSocketServer.onRead(paquete);
         }catch(IOException e){
-            System.out.println("entre a desconectar [ComunicationServer.leerDatos] " + e.getMessage());
+            System.out.println("cliente desconectado [ComunicationServer.leerDatos] " + e.getMessage());
             this.desconectado();
         } catch (ClassNotFoundException ex) {
             System.out.println("[ComunicationServer.leerDatos] " + ex.getMessage());

@@ -1,63 +1,70 @@
 package jsocket.utils;
 
-class MiClase{
-    private String nombre;
-    public MiClase(String nameClase){
-        this.nombre = nameClase;
-    }
-    public String getNombre(){
-        return this.nombre;
-    }
-}
-class MiClase2 extends MiClase{
-  
-    public MiClase2(String nombre) {
-        super(nombre);
-    }
-}
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-
-class MiClase1 extends MiClase{
-  
-  public MiClase1(String nombre){
-      super(nombre);
-  }
-}
-class claseDaddy {
-    public String daddy;
-}
-public class Main {
+public class climain {
+    Socket cliente;
+    ObjectInputStream stRead;
+    ObjectOutputStream stWrite;
     
-  public Main(){
+    public void iniciar(){
+        try {
+            cliente = new Socket("192.168.0.100", 9999);
+            System.out.println("pase el contructor");
+            
+            stWrite = new ObjectOutputStream(cliente.getOutputStream());
+            System.out.println("pase el write cliente");
+            
+            testobject test = new testobject(2, "objeto pruebas");
+            
+            stWrite.writeObject(test);
+            stWrite.flush();
+            //stWrite.close();       
+            //cliente.close();
+        } catch (IOException ex) {
+            System.out.println("");
+        }
+    }
+    
+  public climain(){
       
   }
-  public static void main(String[] argv) throws Exception {
-      Main m = new Main();
-      MiClase1 c1 = new MiClase1("clase 1");
-      m.addClase(c1);
-      MiClase2 c2 = new MiClase2("clase 2");
-      m.addClase(c2);
+  public void version2(){
+        try {          
+          cliente = new Socket("localhost",9999);
+          
+          stWrite = new ObjectOutputStream(cliente.getOutputStream());
+          testobject to = new testobject(1,"object from client");
+          stWrite.writeObject(to);
+          //stWrite.writeObject(new String("another object from the client"));
+          stWrite.close();       
+          cliente.close();
+      } catch (IOException ex) {
+          Logger.getLogger(climain.class.getName()).log(Level.SEVERE, null, ex);
+      }
   }
-  
-  public void addClase(Object clase){
-      
-     if(clase instanceof MiClase1){
-         System.out.println("");
-     }
-     
-     if(clase.getClass() == MiClase.class){
-         System.out.println("Clase Padre");
-     }else{
-         if(clase.getClass() == MiClase1.class){
-             System.out.println("Clase 1");
-         }else{
-             if(clase.getClass() == MiClase2.class){
-                 System.out.println("Clase 2");
-             }else{
-                 System.out.println("no hay ninguna clase");
-             }
-         }
-     }
+  public static void main(String[] arg){
+    System.out.println("SISTEMA CLIENTE");
+    climain main = new climain();
+    main.iniciar();
+    //main.version2();
   }
-  
+}
+
+class testobject implements Serializable {
+    int value ;
+    String id;
+    public  testobject(int v, String s ){
+        this.value=v;
+        this.id=s;
+    }
 }
