@@ -35,7 +35,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="jScrollPane1" pref="394" max="32767" attributes="0"/>
-                          <Component id="txtnick" max="32767" attributes="0"/>
+                          <Component id="lblnick" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -63,7 +63,7 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="txtnick" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblnick" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel4" alignment="1" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -122,7 +122,7 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="txtnick">
+    <Component class="javax.swing.JLabel" name="lblnick">
       <Properties>
         <Property name="text" type="java.lang.String" value="Nick :"/>
       </Properties>

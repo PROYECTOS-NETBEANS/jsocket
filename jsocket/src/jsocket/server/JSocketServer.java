@@ -91,7 +91,7 @@ public class JSocketServer {
         Object[] listeners = JSocketServer.listenerList.getListenerList();
         for(int i = 0; i<listeners.length; i++){
           if(listeners[i] instanceof OnConnectedListenerServer){
-              OnConnectedEventServer sender = new OnConnectedEventServer(new Paquete(direccion, -1, -1, TipoMsg.PQT_SALUDO));
+              OnConnectedEventServer sender = new OnConnectedEventServer(new Paquete(direccion, -1, -1, TipoMsg.PQT_NONE));
               ((OnConnectedListenerServer)listeners[i]).onServerStar(sender);
           }
         }

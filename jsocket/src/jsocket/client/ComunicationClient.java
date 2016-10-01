@@ -1,9 +1,10 @@
 
 package jsocket.client;
 
+import com.google.gson.Gson;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import jsocket.utils.Paquete;
 import jsocket.utils.TipoMsg;
@@ -14,8 +15,8 @@ import jsocket.utils.TipoMsg;
 public class ComunicationClient extends Thread{
     
     private Socket skConexion = null;
-    private ObjectInputStream stRead = null;
-    private ObjectOutputStream stWrite = null;
+    private DataInputStream stRead = null;
+    private DataOutputStream stWrite = null;
     private boolean LISTING = true;
     
     /**
@@ -32,15 +33,11 @@ public class ComunicationClient extends Thread{
     public void run(){
         
         this.getFlujo();
-        
+        System.out.println("run pase get flujo");
         while(LISTING){
-            if(!skConexion.isClosed()){
-                // aqui tengo que lanzar una excepcion
-            }
-            if(!skConexion.isConnected()){
-                // aqui tengo que lanzar una excepcion
-            }
+            System.out.println("entre al while");
             this.leerDatos();
+            System.out.println("sali del leerDatos");
         }
     }
     /**
@@ -48,15 +45,27 @@ public class ComunicationClient extends Thread{
     */
     private void leerDatos(){
         try{
-            Paquete paquete = (Paquete) stRead.readObject();
-            System.out.println("antes del evento on read (leerDatos)");
-            JSocketClient.onRead(paquete);
+            System.out.println("antes de esperar read");
+            String data = stRead.readUTF();
+            System.out.println("antes del evento on read (leerDatos)");            
+            
+            JSocketClient.onRead(this.toObject(data));
         }catch(IOException e){
             System.out.println("entre a desconectar [ComunicationServer.leerDatos] " + e.getMessage());
             this.desconectado();
-        } catch (ClassNotFoundException ex) {
-            System.out.println("[ComunicationServer.leerDatos] " + ex.getMessage());
         }        
+    }
+    private Paquete toObject(String data){
+        Gson g = new Gson();
+        Paquete paquete = g.fromJson(data, Paquete.class);
+        
+        return paquete;
+    }
+    private String toString(Paquete paquete){
+        Gson g = new Gson();
+        String data = g.toJson(paquete);
+        
+        return data;
     }
     private void desconectado(){
         JSocketClient.onDisconnect(new Paquete("desconectado", -1, -1, TipoMsg.PQT_DESCONECTADO));
@@ -65,12 +74,15 @@ public class ComunicationClient extends Thread{
     /**
      * Metodo que envia un mensaje al servidor
      * @param msg Mensaje a enviarse al servidor
+     * @param tipo Tipo de mensaje que se enviara
+     * @param keyDestino El usuario a donde se enviara el mensaje
      */
     public void sendMessage(String msg, TipoMsg tipo, int keyDestino){
         try {
+            System.out.println("pase jjjj");
             Paquete paquete = new Paquete(msg, -1, keyDestino, tipo);
             System.out.println("pase pque");
-            stWrite.writeObject(paquete);
+            stWrite.writeUTF(this.toString(paquete));
             stWrite.flush();
             System.out.println("Mensaje enviado al servidor");
         } catch (IOException e) {
@@ -83,9 +95,9 @@ public class ComunicationClient extends Thread{
     private void getFlujo(){
         try{
             System.out.println("getflujo entre");
-            stRead = new ObjectInputStream(skConexion.getInputStream());
+            stRead = new DataInputStream(skConexion.getInputStream());
             System.out.println("stRead pase");
-            stWrite = new ObjectOutputStream(skConexion.getOutputStream());
+            stWrite = new DataOutputStream(skConexion.getOutputStream());
             System.out.println("stWrite pase");
             stWrite.flush();
             System.out.println("pase el get-flujo client");

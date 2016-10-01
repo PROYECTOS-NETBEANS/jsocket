@@ -14,5 +14,6 @@ public enum TipoMsg {
     MSG_PUBLICO,
     MSG_PRIVADO,
     PQT_DESCONECTADO,
-    PQT_SALUDO
+    PQT_CONFIGURATION,
+    PQT_NONE
 }

@@ -76,11 +76,14 @@ public class JSocketClient {
         }       
     }
 
-    public void conectarServidor(){
+    public void conectarServidor(String nick){
         try {
             skConexion = new Socket(IP_SERVER, PUERTO);
             comunicacion = new ComunicationClient(skConexion);
             comunicacion.start();
+            
+            System.out.println("dicen que esta conectado");
+            this.sendConfiguration(nick);
         } catch (IOException e) {
             System.out.println("[JSocketClient.conectarServidor]: " + e.getMessage());
         }
@@ -105,5 +108,13 @@ public class JSocketClient {
     public void sendMessageAll(String msg){
         System.out.println("send message 1");
         comunicacion.sendMessage(msg, TipoMsg.MSG_PUBLICO, -1);
+    }
+    /**
+     * Este metodo envia las configuraciones necesarias al servidor
+     * 
+     */
+    private void sendConfiguration(String nick){   
+        System.out.println("entre a enviar nick");
+        comunicacion.sendMessage(nick, TipoMsg.PQT_CONFIGURATION, -1);
     }
 }

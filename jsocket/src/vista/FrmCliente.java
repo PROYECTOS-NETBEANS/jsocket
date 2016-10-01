@@ -28,15 +28,15 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
         this.inicializar();
     }
     private void inicializar(){
-        String nick = "";
+        /*String nick = "";
         while(nick.length() <=0 ){
             nick = JOptionPane.showInputDialog(this, "Ingrese nombre de usuario :", "Autentication", JOptionPane.QUESTION_MESSAGE);
-        }
-        txtnick.setText(nick);
+        }*/
+        lblnick.setText("mikezen");
         modelo = new DefaultListModel();
-        cliente = new JSocketClient(5555, "192.168.0.100");
+        cliente = new JSocketClient(5555, "192.168.0.111");
         cliente.addEventListener(this);
-        cliente.conectarServidor();
+        cliente.conectarServidor(lblnick.getText());
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -52,7 +52,7 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
         txtMensaje = new javax.swing.JTextField();
         btnEnviar = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
-        txtnick = new javax.swing.JLabel();
+        lblnick = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
         jLabel4 = new javax.swing.JLabel();
@@ -76,7 +76,7 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
             }
         });
 
-        txtnick.setText("Nick :");
+        lblnick.setText("Nick :");
 
         jScrollPane2.setViewportView(jList1);
 
@@ -97,7 +97,7 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
-                            .addComponent(txtnick, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(lblnick, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -116,7 +116,7 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtnick)
+                    .addComponent(lblnick)
                     .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -148,7 +148,7 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
         System.out.println("vista entrando enviar mensaje");
         this.addMessageList(txtMensaje.getText());
         System.out.println("vista entrando enviar mensaje 2");
-        cliente.sendMessageAll(txtMensaje.getText());
+        cliente.sendMessageAll( lblnick.getText() + " > " + txtMensaje.getText());
     }
     private void addMessageList(String msg){
         modelo.addElement(msg);
@@ -199,9 +199,9 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
     private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lblnick;
     private javax.swing.JList lstLista;
     private javax.swing.JTextField txtMensaje;
-    private javax.swing.JLabel txtnick;
     // End of variables declaration//GEN-END:variables
 
     @Override

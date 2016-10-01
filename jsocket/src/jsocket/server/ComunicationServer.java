@@ -1,7 +1,8 @@
 package jsocket.server;
+import com.google.gson.Gson;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import jsocket.utils.Paquete;
 import jsocket.utils.TipoMsg;
@@ -12,10 +13,10 @@ import jsocket.utils.TipoMsg;
 public class ComunicationServer extends Thread{
     private boolean LISTING = true;
     private Socket skConexion = null;
-    private ObjectInputStream stRead = null;
-    private ObjectOutputStream stWrite = null;
+    private DataInputStream stRead = null;
+    private DataOutputStream stWrite = null;
     private int key = 0;
-    
+    private String username = "";
     /**
      * Constructor del escuchador de mensajes del cliente
      * @param client canal de comunicacion con el cliente
@@ -54,9 +55,9 @@ public class ComunicationServer extends Thread{
      */
     private void getFlujo(){
         try{
-            stRead = new ObjectInputStream(skConexion.getInputStream());
+            stRead = new DataInputStream(skConexion.getInputStream());
             System.out.println("pase st read server");
-            stWrite = new ObjectOutputStream(skConexion.getOutputStream());
+            stWrite = new DataOutputStream(skConexion.getOutputStream());
             System.out.println("pase st read cliente");
             stWrite.flush();
         }catch(IOException e){
@@ -80,23 +81,42 @@ public class ComunicationServer extends Thread{
     private void desconectado(){
         JSocketServer.onDisconnect(new Paquete("desconectado", this.key, this.key, TipoMsg.PQT_DESCONECTADO));
     }
+
+    private Paquete toObject(String data){
+        Gson g = new Gson();
+        Paquete paquete = g.fromJson(data, Paquete.class);
+        
+        return paquete;
+    }
+    private String toString(Paquete paquete){
+        Gson g = new Gson();
+        String data = g.toJson(paquete);
+        
+        return data;
+    }
+    
     /**
      * Metodo que lee los datos que llegan del cliente
      */
     private void leerDatos(){
         try{
-            System.out.println("esperando mensajes");
-            Paquete paquete = (Paquete) stRead.readObject();
-            System.out.println("mensaje llegado");
+            String data = stRead.readUTF();
+
+            Paquete paquete = this.toObject(data);
             paquete.setOrigen(this.key);
-            System.out.println("enviando al evento");
-            JSocketServer.onRead(paquete);
+            
+            this.onRead(paquete);
         }catch(IOException e){
             System.out.println("cliente desconectado [ComunicationServer.leerDatos] " + e.getMessage());
             this.desconectado();
-        } catch (ClassNotFoundException ex) {
-            System.out.println("[ComunicationServer.leerDatos] " + ex.getMessage());
         }
+    }
+    private void onRead(Paquete paquete){
+        if(paquete.getTipoMsg() == TipoMsg.PQT_CONFIGURATION){
+            JSocketServer.onConnect(paquete);
+        }else{
+            JSocketServer.onRead(paquete);
+        }        
     }
     /**
      * Cerramos el stream el socket e hilo

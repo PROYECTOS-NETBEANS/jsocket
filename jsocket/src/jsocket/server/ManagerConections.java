@@ -40,7 +40,7 @@ public class ManagerConections extends Thread{
             System.out.println("usuario conectado : (esperandoConexiones)");
             ComunicationServer comunicacion = new ComunicationServer(skConexion, key);
             comunicacion.start();
-            this.usuarioConectado(comunicacion);
+            //this.usuarioConectado(comunicacion);
 
             key = key + 1;
         }catch(IOException ex){
@@ -48,14 +48,16 @@ public class ManagerConections extends Thread{
         }
     }
     /**
-     * Metodo que llama al evento del escuchador
+     * Metodo que llama al evento onConnectet
      * @param comunicacion 
-     */
+     *
     private void usuarioConectado(ComunicationServer comunicacion){
         String ip = skConexion.getInetAddress().getHostAddress() + " : " + String.valueOf(skConexion.getPort());
-        JSocketServer.onConnect(new Paquete(ip, comunicacion.getKey(), comunicacion.getKey(), TipoMsg.PQT_SALUDO));
+        JSocketServer.onConnect(new Paquete(ip, comunicacion.getKey(), comunicacion.getKey(), TipoMsg.PQT_NONE));
         JSocketServer.setConnectionClient(comunicacion);
     }
+    */
+    
     /**
      * Detiene el escuchador de cliente
      */

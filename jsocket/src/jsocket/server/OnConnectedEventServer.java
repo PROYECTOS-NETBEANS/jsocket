@@ -79,4 +79,17 @@ public class OnConnectedEventServer extends EventObject{
             return false;
         }        
     }
+    public String getUserName(){
+        if(this.getSource() instanceof Paquete){
+            Paquete p = (Paquete) this.getSource();
+            if(p.getTipoMsg() == TipoMsg.PQT_CONFIGURATION){
+                return p.getMsg();
+            }else{
+                return "";
+            }
+        }else{
+            return "";
+        }
+        
+    }
 }

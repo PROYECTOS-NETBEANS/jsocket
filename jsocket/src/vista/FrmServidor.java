@@ -225,8 +225,7 @@ public class FrmServidor extends javax.swing.JFrame implements OnConnectedListen
 
     @Override
     public void onConnect(Object sender, OnConnectedEventServer data){
-        System.out.println("key conect : " + String.valueOf(data.getOrigenClient()));
-        this.addUsuarioList(new Usuario(data.getOrigenClient(), data.getMessageClient(), data.getMessageClient()));
+        this.addUsuarioList(new Usuario(data.getOrigenClient(), data.getUserName()));
     }
 
     @Override
@@ -241,7 +240,7 @@ public class FrmServidor extends javax.swing.JFrame implements OnConnectedListen
 
     @Override
     public void onRead(Object sender, OnConnectedEventServer data) {
-        System.out.println("entre a mensaje : " + String.valueOf(data.getOrigenClient()));
+        System.out.println("Mensaje llegado de : " + String.valueOf(data.getOrigenClient()));
         
         this.addMessageList(data.getMessageClient());
     }
@@ -253,19 +252,17 @@ public class FrmServidor extends javax.swing.JFrame implements OnConnectedListen
     }*/
 }
 class Usuario{
-    private int key;
-    private String userName;
-    private String ip;
+    private int key = 0;
+    private String userName = "";
     /**
      * Constructor de clase
      * @param key identificador unico de usuario
      * @param userName nombre de usuario de la persona que acaba de conectarse
      * @param ip ip del cliente que se conecto
      */
-    public Usuario(int key, String userName, String ip){
+    public Usuario(int key, String userName){
         this.key = key;
-        this.userName = userName;
-        this.ip = ip;
+        this.userName = userName;        
     }
     public int getKey(){
         return this.key;
@@ -273,11 +270,8 @@ class Usuario{
     public String getUserName(){
         return this.userName;
     }
-    public String getIp(){
-        return this.ip;
-    }
     @Override
     public String toString(){
-        return this.ip;
+        return this.userName;
     }
 }
