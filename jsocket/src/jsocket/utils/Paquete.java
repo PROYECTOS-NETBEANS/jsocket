@@ -12,7 +12,6 @@ public class Paquete implements Serializable{
     private int keyDestino = 0;
     private String msg = "";
     private TipoMsg tpMsg = TipoMsg.PQT_NONE;
-   
     /**
      * Constructor de paquete que se enviara entre usuarios
      * @param msg Mensaje del paquete

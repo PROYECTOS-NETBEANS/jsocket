@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package jsocket.client;
 import java.io.IOException;
 import java.net.Socket;
@@ -19,8 +13,9 @@ public class JSocketClient {
     
     private String IP_SERVER = "";
     private int PUERTO = 5555;
-    private Socket skConexion;
-
+    private Socket skConexion = null;
+    private String userName = "";
+    
     private ComunicationClient comunicacion = null;
     private static EventListenerList listenerList = new EventListenerList();
 
@@ -51,8 +46,7 @@ public class JSocketClient {
      */
     public static void onConnect(Paquete paquete){
         Object[] listeners = JSocketClient.listenerList.getListenerList();
-        for(int i = 0; i<listeners.length; i++){
-          
+        for(int i = 0; i<listeners.length; i++){          
           if(listeners[i] instanceof OnConnectedListenerClient){
               System.out.println("jsocketclient.onConnect : key " + String.valueOf(paquete.getOrigen()));
               OnConnectedEventClient sender = new OnConnectedEventClient(paquete);
@@ -62,31 +56,40 @@ public class JSocketClient {
     }    
     /**
      * Metodo que lanza el evento de desconexion
+     * @param paquete
      */
     public static void onDisconnect(Paquete paquete){
         Object[] listeners = JSocketClient.listenerList.getListenerList();
         for(int i = 0; i<listeners.length; i++){
           if(listeners[i] instanceof OnConnectedListenerClient){
-              System.out.println("pase onDisconect 1");
               OnConnectedEventClient sender = new OnConnectedEventClient(paquete);
-              System.out.println("pase onDisconect 2");
               ((OnConnectedListenerClient)listeners[i]).onDisconnect("disconnect", sender);
-              System.out.println("pase onDisconect 3");
+              
           }
         }       
     }
-
+    /**
+     * Metodo que realiza la conexion al servidor
+     * @param nick Nombre de usuario del cliente
+     */
     public void conectarServidor(String nick){
         try {
+            this.userName = nick;
             skConexion = new Socket(IP_SERVER, PUERTO);
             comunicacion = new ComunicationClient(skConexion);
+            this.sendConfiguration();
             comunicacion.start();
-            
-            System.out.println("dicen que esta conectado");
-            this.sendConfiguration(nick);
+            System.out.println("cliente conectado al servido");
+            JSocketClient.onConnect(new Paquete("", -1, -1, TipoMsg.PQT_NONE));
         } catch (IOException e) {
             System.out.println("[JSocketClient.conectarServidor]: " + e.getMessage());
         }
+    }
+    /**
+     * Metodo que realiza la desconexion con el servidor
+     */
+    public void desconectarServidor(){
+        this.comunicacion.cerrarConexion();
     }
      /**
      * Metodo que lanza el evento de lectura del servidor
@@ -113,8 +116,8 @@ public class JSocketClient {
      * Este metodo envia las configuraciones necesarias al servidor
      * 
      */
-    private void sendConfiguration(String nick){   
+    private void sendConfiguration(){
         System.out.println("entre a enviar nick");
-        comunicacion.sendMessage(nick, TipoMsg.PQT_CONFIGURATION, -1);
+        comunicacion.sendMessage(userName, TipoMsg.PQT_CONFIGURATION, -1);
     }
 }

@@ -9,18 +9,21 @@ public interface OnConnectedListenerClient extends EventListener{
     /**
      * Se produce cuando se conecta al servidor
      * @param sender Referencia del objeto que esta generando el evento
+     * @param data
      * */
     public void onConnect(Object sender, OnConnectedEventClient data);
 
     /**
      * Se produce cuando se desconecta del servidor
      * @param sender Referencia del objeto que esta generando el evento
+     * @param data
      * */	
     public void onDisconnect(Object sender, OnConnectedEventClient data);
 
     /**
      * Se produce cuando llegan mensajes del servidor
      * @param sender Referencia del objeto [ComunicationClient]
+     * @param data
      * */		
     public void onRead(Object sender, OnConnectedEventClient data);
 

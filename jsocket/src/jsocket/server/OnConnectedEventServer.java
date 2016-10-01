@@ -79,6 +79,7 @@ public class OnConnectedEventServer extends EventObject{
             return false;
         }        
     }
+    /*
     public String getUserName(){
         if(this.getSource() instanceof Paquete){
             Paquete p = (Paquete) this.getSource();
@@ -92,4 +93,5 @@ public class OnConnectedEventServer extends EventObject{
         }
         
     }
+    */
 }

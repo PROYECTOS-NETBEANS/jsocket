@@ -15,7 +15,7 @@ public class JSocketServer {
 
     private ManagerConections manager = null;
     
-    private static HashMap<Integer, ComunicationServer> clientHashMap = null;
+    private static HashMap<Integer, ComunicationServer> clientHashMap = new HashMap<>();
     private static EventListenerList listenerList = new EventListenerList();
 
     private ServerSocket skServer;
@@ -30,41 +30,36 @@ public class JSocketServer {
             this.puerto = puerto;
             listenerList = new EventListenerList();
             skServer = new ServerSocket(this.puerto);
-            manager = new ManagerConections(skServer);
+            manager = new ManagerConections(skServer);            
         }catch(IOException e){
             System.out.println("[JSocketServer.JSocketServer] " + e.getMessage());
-        }
-    }
-    /**
-     * Metodo que devuelve la lista de clientes conectados
-     * @return  
-     */
-    public static HashMap getClients(){
-        if(clientHashMap == null){
-            return null;
-        }else{
-            return JSocketServer.clientHashMap;
         }
     }
     /**
      * Guarda el escuchador en la lista de escuchadores
      * @param conexion Escuchador que esta pendiente de los mensajes que llegan del cliente
      */
-    public static void setConnectionClient(ComunicationServer conexion){
-        if(clientHashMap == null){
+    public static void addClient(ComunicationServer conexion){
+        if(JSocketServer.clientHashMap == null){
             JSocketServer.clientHashMap = new HashMap<>();
         }
         JSocketServer.clientHashMap.put(conexion.getKey(), conexion);
     }
     /**
+     * Metodo que devuelve la lista de todos los clientes
+     * @return 
+     */
+    public static HashMap getClients(){
+        return JSocketServer.clientHashMap;
+    }
+    /**
      * Elimina un escuchador de la lista, a partir de una llave key
      * @param key Valor unico mediante el cual se buscara en la lista
      */
-    public static void removeConnectionClients(int key){
-        System.out.println("entrando a removeClient");
-        ComunicationServer conexion = JSocketServer.clientHashMap.get(key);
-        conexion.detenerEscuchador();
+    public static void removeClient(int key){
+        System.out.println("count1 : " + String.valueOf(JSocketServer.clientHashMap.size()));
         JSocketServer.clientHashMap.remove(key);
+        System.out.println("count2 : " + String.valueOf(JSocketServer.clientHashMap.size()));        
     }
     
     /**
@@ -101,20 +96,19 @@ public class JSocketServer {
      * Metodo que lanza el evento de lectura del servidor
      * @param paquete Paquete con la informacion que llega desde el cliente
      */
-    public static void onRead(Paquete paquete){
+    public static void onRead(Paquete paquete, String userName){
         Object[] listeners = JSocketServer.listenerList.getListenerList();
         for(int i = 0; i<listeners.length; i++){
           if(listeners[i] instanceof OnConnectedListenerServer){
               OnConnectedEventServer sender = new OnConnectedEventServer(paquete);
-              ((OnConnectedListenerServer)listeners[i]).onRead("read", sender);
+              ((OnConnectedListenerServer)listeners[i]).onRead("read", sender, userName);
           }
         }       
     }
 
     /**
      * Metodo que lanza el evento cuando se conecta un cliente al servidor
-     * @param key identificador del cliente
-     * @param msg mensaje del que se enviara
+     * @param paquete
      */
     public static void onConnect(Paquete paquete){
         Object[] listeners = JSocketServer.listenerList.getListenerList();
@@ -123,7 +117,7 @@ public class JSocketServer {
           if(listeners[i] instanceof OnConnectedListenerServer){
               System.out.println("jsocketserver.onConnect : key " + String.valueOf(paquete.getOrigen()));
               OnConnectedEventServer sender = new OnConnectedEventServer(paquete);
-              ((OnConnectedListenerServer)listeners[i]).onConnect("onconnected", sender);
+              ((OnConnectedListenerServer)listeners[i]).onConnect("onconnected", sender, paquete.getMsg());
           }
         }
     }    
@@ -136,11 +130,8 @@ public class JSocketServer {
         Object[] listeners = JSocketServer.listenerList.getListenerList();
         for(int i = 0; i<listeners.length; i++){
           if(listeners[i] instanceof OnConnectedListenerServer){
-              System.out.println("pase onDisconect 1");
               OnConnectedEventServer sender = new OnConnectedEventServer(paquete);
-              System.out.println("pase onDisconect 2");
               ((OnConnectedListenerServer)listeners[i]).onDisconnect("disconnect", sender);
-              System.out.println("pase onDisconect 3");
           }
         }       
     }
@@ -156,32 +147,7 @@ public class JSocketServer {
      * desconectando todos los clientes
      */
     public void detenerServicio(){
-        try{
-            System.out.println("deten 1 ");
-            /*
-            Iterator it = JSocketServer.clientHashMap.entrySet().iterator();
-            while(it.hasNext()){
-                Map.Entry entry = (Map.Entry) it.next();
-                int keyValue = entry.getKey();
-                ver alto
-                it.remove();
-            }
-            */
-            
-            int i = 1;
-            for(Integer key : JSocketServer.clientHashMap.keySet()){
-                //System.out.println("antes detener 1");
-                //JSocketServer.onDisconnect(key);
-                JSocketServer.removeConnectionClients(key);
-                System.out.println("inde : " + String.valueOf(i));
-                System.out.println(" count : " + String.valueOf(JSocketServer.getClients().size()));
-            }
-            System.out.println("finalizacion de detenerServicio");
-            JSocketServer.clientHashMap = null;
-        }catch(Exception e){
-            System.out.println("[JSocketServer.detenerServicio] " + e.getMessage());
-        }
-
+        manager.detenerServicio();
     }
     /**
      * Metodo que lanza el evento de envio de mensaje

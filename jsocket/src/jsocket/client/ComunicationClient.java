@@ -6,6 +6,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jsocket.utils.Paquete;
 import jsocket.utils.TipoMsg;
 /**
@@ -22,22 +24,21 @@ public class ComunicationClient extends Thread{
     /**
      * Constructor del escuchador que se comunica con el cliente
      * @param conexion Socket de comunicacion con el servidor
-     * @param listener Escuchador de eventos del cliente
      */
     public ComunicationClient(Socket conexion){
         this.LISTING = true;
         this.skConexion = conexion;
+        this.obtenerFlujos();
     }
     
     @Override
     public void run(){
-        
-        this.getFlujo();
-        System.out.println("run pase get flujo");
-        while(LISTING){
-            System.out.println("entre al while");
-            this.leerDatos();
-            System.out.println("sali del leerDatos");
+        try{
+            while(LISTING){
+                this.leerDatos();
+            }            
+        }catch(Exception e){
+            System.out.println("[ComunicationClient.run] " + e.getMessage());
         }
     }
     /**
@@ -45,13 +46,10 @@ public class ComunicationClient extends Thread{
     */
     private void leerDatos(){
         try{
-            System.out.println("antes de esperar read");
             String data = stRead.readUTF();
-            System.out.println("antes del evento on read (leerDatos)");            
-            
             JSocketClient.onRead(this.toObject(data));
         }catch(IOException e){
-            System.out.println("entre a desconectar [ComunicationServer.leerDatos] " + e.getMessage());
+            System.out.println("entre a desconectar [ComunicationClient.leerDatos] " + e.getMessage());            
             this.desconectado();
         }        
     }
@@ -67,8 +65,25 @@ public class ComunicationClient extends Thread{
         
         return data;
     }
+    public void cerrarConexion(){
+        try {
+            LISTING = false;
+            stRead.close();
+            stWrite.close();
+            skConexion.close();
+            System.out.println("pase cerrarConexion");
+        } catch (IOException ex) {
+            System.out.println("[ComunicationClient.cerrarConexion] " + ex.getMessage());
+        }        
+    }
     private void desconectado(){
-        JSocketClient.onDisconnect(new Paquete("desconectado", -1, -1, TipoMsg.PQT_DESCONECTADO));
+        if(!skConexion.isClosed()){
+            System.out.println("soket no cerrado");
+            this.cerrarConexion();
+            JSocketClient.onDisconnect(new Paquete("desconectado", -1, -1, TipoMsg.PQT_DESCONECTADO));                
+        }else{
+            System.out.println("la conexion ya estaba cerrada");
+        }
     }
     
     /**
@@ -92,17 +107,11 @@ public class ComunicationClient extends Thread{
     /**
      * Metodo que obtiene los flujos de datos del socket
      */
-    private void getFlujo(){
+    private void obtenerFlujos(){
         try{
-            System.out.println("getflujo entre");
             stRead = new DataInputStream(skConexion.getInputStream());
-            System.out.println("stRead pase");
             stWrite = new DataOutputStream(skConexion.getOutputStream());
-            System.out.println("stWrite pase");
             stWrite.flush();
-            System.out.println("pase el get-flujo client");
-            if(stWrite== null)
-                System.out.println("stwrite es nulo");
          }catch(IOException e){
             System.out.println("[ComunicationClient.getFlujo] " + e.getMessage());
         }

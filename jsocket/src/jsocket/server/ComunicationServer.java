@@ -11,12 +11,12 @@ import jsocket.utils.TipoMsg;
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
  */
 public class ComunicationServer extends Thread{
-    private boolean LISTING = true;
+    private boolean RUN = true;
     private Socket skConexion = null;
     private DataInputStream stRead = null;
     private DataOutputStream stWrite = null;
     private int key = 0;
-    private String username = "";
+    private String userName = "";
     /**
      * Constructor del escuchador de mensajes del cliente
      * @param client canal de comunicacion con el cliente
@@ -24,8 +24,9 @@ public class ComunicationServer extends Thread{
      */
     public ComunicationServer(Socket client, int key){
         this.skConexion = client;
-        this.LISTING = true;
+        this.RUN = true;
         this.key = key;
+        this.obtenerFlujos();
     }
     public int getKey(){
         return this.key;
@@ -35,25 +36,21 @@ public class ComunicationServer extends Thread{
      */
     @Override
     public void run() {
-        // Obtenemos los flujos de datos
-        System.out.println("entre al hilo");
-        this.getFlujo();
-        // escuchando los paquetes que el servidor enviará        
-        System.out.println("entrando al while");
-        while(LISTING){
-            try{
-                System.out.println("antes de entrar al metodo");
+        
+        while(RUN){
+            //try{
                 this.leerDatos();
-            }catch(Exception e){
-                System.out.println("[ComunicationsServer.run] " + e.getMessage());
-            }
-            
+            //}catch(Exception e){
+                //System.out.println("RUN. listening : " + String.valueOf(RUN));
+                //RUN = false;
+                //System.out.println("[ComunicationsServer.run.] " + e.getMessage());
+            //}
         }
     }
     /**
      * Obtiene los flujos la primera vez que inicia y empieza a escuchar
      */
-    private void getFlujo(){
+    private void obtenerFlujos(){
         try{
             stRead = new DataInputStream(skConexion.getInputStream());
             System.out.println("pase st read server");
@@ -73,22 +70,26 @@ public class ComunicationServer extends Thread{
             stWrite.writeUTF(msg);
             stWrite.flush();
         } catch (IOException e) {
-            System.out.println("[ComunicationServer.escribirDatos] " + e.getMessage());
-            this.cerrarConexion();
-            this.desconectado();
+            System.out.println("[ComunicationServer.escribirDatos] " + e.getMessage());            
+            this.onDisconnect();
         }
     }
-    private void desconectado(){
-        JSocketServer.onDisconnect(new Paquete("desconectado", this.key, this.key, TipoMsg.PQT_DESCONECTADO));
+    
+    public void onDisconnect(){
+        if(!skConexion.isClosed()){
+            System.out.println("onDisconnect");
+            this.cerrarConexion();
+            JSocketServer.onDisconnect(new Paquete("desconectado", this.key, this.key, TipoMsg.PQT_DESCONECTADO));            
+        }
     }
 
-    private Paquete toObject(String data){
+    private Paquete StringToObject(String data){
         Gson g = new Gson();
         Paquete paquete = g.fromJson(data, Paquete.class);
         
         return paquete;
     }
-    private String toString(Paquete paquete){
+    private String objectToString(Paquete paquete){
         Gson g = new Gson();
         String data = g.toJson(paquete);
         
@@ -100,22 +101,28 @@ public class ComunicationServer extends Thread{
      */
     private void leerDatos(){
         try{
-            String data = stRead.readUTF();
+            System.out.println("esperando paquetes del cliente");
 
-            Paquete paquete = this.toObject(data);
-            paquete.setOrigen(this.key);
-            
+            String data = stRead.readUTF();
+            System.out.println("paquete llegado");
+            Paquete paquete = this.StringToObject(data);
             this.onRead(paquete);
         }catch(IOException e){
-            System.out.println("cliente desconectado [ComunicationServer.leerDatos] " + e.getMessage());
-            this.desconectado();
+            System.out.println("cliente acaba de desconectarse [ComunicationServer.leerDatos]");
+            this.onDisconnect();
+        }catch(Exception ex){
+            System.out.println("[comunicationServer.leerDatos] " + ex.getMessage());
         }
     }
     private void onRead(Paquete paquete){
+        paquete.setOrigen(this.key);
+        
         if(paquete.getTipoMsg() == TipoMsg.PQT_CONFIGURATION){
+            //es paquete que llega con el nick
+            this.userName = paquete.getMsg();
             JSocketServer.onConnect(paquete);
         }else{
-            JSocketServer.onRead(paquete);
+            JSocketServer.onRead(paquete, this.userName);
         }        
     }
     /**
@@ -123,6 +130,7 @@ public class ComunicationServer extends Thread{
      */
     private void cerrarConexion(){
         try {
+            RUN = false;
             stRead.close();
             stWrite.close();
             skConexion.close();
@@ -130,13 +138,5 @@ public class ComunicationServer extends Thread{
         } catch (IOException e) {
             System.out.println("[ComunicationServer.cerrarConexion] " + e.getMessage());
         }
-    }
-    /**
-     * Detiene el escuchador
-     */
-    public void detenerEscuchador(){
-        this.LISTING = false;
-        this.cerrarConexion();
-        System.out.println("pase comunicationServer.detenerEscuchador");
     }
 }

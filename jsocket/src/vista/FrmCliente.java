@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package vista;
 
 import javax.swing.DefaultListModel;
@@ -12,8 +7,8 @@ import jsocket.client.OnConnectedListenerClient;
 import jsocket.client.OnConnectedEventClient;
 
 /**
- *
- * @author Alex Limbert
+ * 
+ * @author Alex Limbert Yalusqui <limbertyaluqui@gmail.com>
  */
 public class FrmCliente extends javax.swing.JFrame implements OnConnectedListenerClient{
 
@@ -28,13 +23,13 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
         this.inicializar();
     }
     private void inicializar(){
-        /*String nick = "";
+        String nick = "";
         while(nick.length() <=0 ){
             nick = JOptionPane.showInputDialog(this, "Ingrese nombre de usuario :", "Autentication", JOptionPane.QUESTION_MESSAGE);
-        }*/
-        lblnick.setText("mikezen");
+        }
+        lblnick.setText(nick);
         modelo = new DefaultListModel();
-        cliente = new JSocketClient(5555, "192.168.0.111");
+        cliente = new JSocketClient(5555, "192.168.0.100");
         cliente.addEventListener(this);
         cliente.conectarServidor(lblnick.getText());
     }
@@ -58,6 +53,11 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jScrollPane1.setViewportView(lstLista);
 
@@ -144,11 +144,15 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+            cliente.desconectarServidor();
+    }//GEN-LAST:event_formWindowClosing
+
     private void enviarMensaje(){
-        System.out.println("vista entrando enviar mensaje");
-        this.addMessageList(txtMensaje.getText());
+        
+        this.addMessageList(lblnick.getText() + "> " + txtMensaje.getText());
         System.out.println("vista entrando enviar mensaje 2");
-        cliente.sendMessageAll( lblnick.getText() + " > " + txtMensaje.getText());
+        cliente.sendMessageAll(txtMensaje.getText());
     }
     private void addMessageList(String msg){
         modelo.addElement(msg);
@@ -211,7 +215,7 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
 
     @Override
     public void onConnect(Object sender, OnConnectedEventClient data){
-        
+        this.setTitle("Cliente : " + lblnick.getText() + " Conectado al servidor");
     }
 
     @Override
