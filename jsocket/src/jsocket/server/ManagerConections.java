@@ -101,12 +101,4 @@ public class ManagerConections extends Thread{
     }
     */
     
-    /**
-     * Metodo que lanza el evento de escritura
-     
-    public void onWrite(){
-        listener.onWrite(new OnConnectedEventServer(this));
-    }
-    */
-
 }

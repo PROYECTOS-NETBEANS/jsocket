@@ -61,19 +61,24 @@ public class ComunicationServer extends Thread{
             System.out.println("[ComunicationServer.getFlujo] " + e.getMessage());
         }
     }
-   /**
-    * Envia un mensaje al cliente
-    * @param msg mensaje para enviar a los cliente
-    */
-    public void escribirDatos(String msg){
+    /**
+     * Metodo que envia un mesaje al cliente de esta conexion
+     * @param msg Mensaje que se envia a los clientes
+     * @param tipo Tipo de mensaje
+     * @param keyOrigen El cliente o servidor que envia el mensaje
+     */
+    public void sendMessage(String msg, TipoMsg tipo, int keyOrigen){
         try {
-            stWrite.writeUTF(msg);
+            Paquete paquete = new Paquete(msg, keyOrigen, this.key, tipo);
+            stWrite.writeUTF(this.toString(paquete));
             stWrite.flush();
+            System.out.println("Mensaje enviado a los cliente");
         } catch (IOException e) {
-            System.out.println("[ComunicationServer.escribirDatos] " + e.getMessage());            
-            this.onDisconnect();
+            System.out.println("[ComunicationClient.sendMessage] " + e.getMessage());
         }
     }
+
+    
     
     public void onDisconnect(){
         if(!skConexion.isClosed()){
@@ -83,13 +88,13 @@ public class ComunicationServer extends Thread{
         }
     }
 
-    private Paquete StringToObject(String data){
+    private Paquete toObject(String data){
         Gson g = new Gson();
         Paquete paquete = g.fromJson(data, Paquete.class);
         
         return paquete;
     }
-    private String objectToString(Paquete paquete){
+    private String toString(Paquete paquete){
         Gson g = new Gson();
         String data = g.toJson(paquete);
         
@@ -105,7 +110,7 @@ public class ComunicationServer extends Thread{
 
             String data = stRead.readUTF();
             System.out.println("paquete llegado");
-            Paquete paquete = this.StringToObject(data);
+            Paquete paquete = this.toObject(data);
             this.onRead(paquete);
         }catch(IOException e){
             System.out.println("cliente acaba de desconectarse [ComunicationServer.leerDatos]");
@@ -122,6 +127,7 @@ public class ComunicationServer extends Thread{
             this.userName = paquete.getMsg();
             JSocketServer.onConnect(paquete);
         }else{
+            // si llega un paquete desde el cliente
             JSocketServer.onRead(paquete, this.userName);
         }        
     }

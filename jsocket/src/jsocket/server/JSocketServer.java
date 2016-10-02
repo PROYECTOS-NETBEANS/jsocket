@@ -151,9 +151,8 @@ public class JSocketServer {
     }
     /**
      * Metodo que lanza el evento de envio de mensaje
-     *
+     */
     public void onWrite(){
-        manager.onWrite();
+        
     }
-    */
 }

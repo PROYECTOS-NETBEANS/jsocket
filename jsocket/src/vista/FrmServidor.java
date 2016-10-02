@@ -134,8 +134,8 @@ public class FrmServidor extends javax.swing.JFrame implements OnConnectedListen
      * Activamos el evento de envio de mensaje
      */
     private void enviarMensaje(){
-        //this.addMessageList(txtMensaje.getText());
-        //servidor.onWrite();
+        this.addMessageList("servidor >" + txtMensaje.getText());
+        // aqui falta el enviar mensaje a los clientes
     }
     private void removerUsuario(int key){
         for(int i = 0; i < usuarios.getSize(); i++){
@@ -149,7 +149,6 @@ public class FrmServidor extends javax.swing.JFrame implements OnConnectedListen
         }
     }
     private void addMessageList(String msg){
-        System.out.println("entre add msg");
         modelo.addElement(msg);
         lstLista.setModel(modelo);
     }
