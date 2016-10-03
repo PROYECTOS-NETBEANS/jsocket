@@ -11,7 +11,7 @@ import jsocket.utils.TipoMsg;
  */
 public class JSocketClient {
     
-    private String IP_SERVER = "";
+    private String IP_SERVeeeeER = "";
     private int PUERTO = 5555;
     private Socket skConexion = null;
     private String userName = "";
@@ -19,6 +19,10 @@ public class JSocketClient {
     private ComunicationClient comunicacion = null;
     private static EventListenerList listenerList = new EventListenerList();
 
+    entrar a esta pagina para ver las excepciones
+    
+    https://examples.javacodegeeks.com/core-java/net/socketexception/java-net-socketexception-how-to-solve-socketexception/
+    
     public JSocketClient(int puerto, String ip){
         this.PUERTO = puerto;
         this.IP_SERVER = ip;
