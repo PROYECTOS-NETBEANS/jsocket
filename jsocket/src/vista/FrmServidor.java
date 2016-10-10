@@ -135,7 +135,7 @@ public class FrmServidor extends javax.swing.JFrame implements OnConnectedListen
      */
     private void enviarMensaje(){
         this.addMessageList("servidor >" + txtMensaje.getText());
-        // aqui falta el enviar mensaje a los clientes
+        server.sendMessageAll(txtMensaje.getText(), -1);
     }
     private void removerUsuario(int key){
         for(int i = 0; i < usuarios.getSize(); i++){

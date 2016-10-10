@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.EventListener;
 import java.util.HashMap;
+import java.util.Iterator;
 import javax.swing.event.EventListenerList;
 import jsocket.utils.Paquete;
 import jsocket.utils.TipoMsg;
@@ -95,6 +96,7 @@ public class JSocketServer {
      /**
      * Metodo que lanza el evento de lectura del servidor
      * @param paquete Paquete con la informacion que llega desde el cliente
+     * @param userName
      */
     public static void onRead(Paquete paquete, String userName){
         Object[] listeners = JSocketServer.listenerList.getListenerList();
@@ -124,7 +126,7 @@ public class JSocketServer {
     
     /**
      * Metodo que lanza el evento de desconexion
-     * @param key El identificador del cliente que se desconecto
+     * @param paquete
      */
     public static void onDisconnect(Paquete paquete){
         Object[] listeners = JSocketServer.listenerList.getListenerList();
@@ -150,9 +152,27 @@ public class JSocketServer {
         manager.detenerServicio();
     }
     /**
-     * Metodo que lanza el evento de envio de mensaje
+     * Metodo que envia un mensaje a todos los clientes
+     * @param msg Mensaje que se enviara a todos los clientes
+     * @param keyOrigen
      */
-    public void onWrite(){
-        
+    public void sendMessageAll(String msg, int keyOrigen){
+        HashMap clientes = JSocketServer.getClients();
+        Iterator<ComunicationServer> it = clientes.values().iterator();
+        ComunicationServer cliente;
+        while(it.hasNext()){
+            cliente = it.next();
+            cliente.sendMessage(msg, TipoMsg.MSG_PUBLICO, keyOrigen);
+        }        
+    }
+    /**
+     * Envia un mensaje a un cliente
+     * @param keyClient Cliente al que se tiene que enviar el mensaje
+     * @param msg Mensaje que se enviara al cliente
+     * @param keyOrigen
+     */
+    public void sendMessage(int keyClient, String msg, int keyOrigen){
+        ComunicationServer cliente = (ComunicationServer) JSocketServer.getClients().get(keyClient);
+        cliente.sendMessage(msg, TipoMsg.MSG_PRIVADO, keyOrigen);
     }
 }
