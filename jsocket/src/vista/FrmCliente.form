@@ -55,6 +55,8 @@
               </Group>
           </Group>
           <Group type="102" alignment="1" attributes="0">
+              <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
+              <Component id="jlblEstado" min="-2" pref="366" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
               <Component id="jButton1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -80,7 +82,10 @@
                   <Component id="btnEnviar" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
-              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jlblEstado" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -149,6 +154,11 @@
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>
         <Property name="text" type="java.lang.String" value="Usuarios Conectados"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jlblEstado">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="ESTADO DE CONEXION AL SERVIDOR : "/>
       </Properties>
     </Component>
   </SubComponents>

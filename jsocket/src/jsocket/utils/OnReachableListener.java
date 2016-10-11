@@ -16,5 +16,5 @@ public interface OnReachableListener extends EventListener{
     /**
      * Ocurre cuando se agotaron los intentos de reconexion al servidor
      */
-    public void OnLostConnection();
+    public void onLostConnection();
 }

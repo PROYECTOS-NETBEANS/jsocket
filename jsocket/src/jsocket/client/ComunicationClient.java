@@ -47,7 +47,7 @@ public class ComunicationClient extends Thread{
             String data = stRead.readUTF();
             JSocketClient.onRead(this.toObject(data));
         }catch(IOException e){
-            System.out.println("entre a desconectar [ComunicationClient.leerDatos] " + e.getMessage());            
+            System.out.println("[ComunicationClient.leerDatos] no se encuentra conexion");
             this.desconectado();
         }        
     }
@@ -64,12 +64,14 @@ public class ComunicationClient extends Thread{
         return data;
     }
     public void cerrarConexion(){
-        try {
+        try {            
             LISTING = false;
-            stRead.close();
-            stWrite.close();
-            skConexion.close();
-            System.out.println("pase cerrarConexion");
+            if(!skConexion.isClosed()){
+                stRead.close();
+                stWrite.close();
+                skConexion.close();
+                System.out.println("pase cerrarConexion");                
+            }
         } catch (IOException ex) {
             System.out.println("[ComunicationClient.cerrarConexion] " + ex.getMessage());
         }        
@@ -92,9 +94,7 @@ public class ComunicationClient extends Thread{
      */
     public void sendMessage(String msg, TipoMsg tipo, int keyDestino){
         try {
-            System.out.println("pase jjjj");
             Paquete paquete = new Paquete(msg, -1, keyDestino, tipo);
-            System.out.println("pase pque");
             stWrite.writeUTF(this.toString(paquete));
             stWrite.flush();
             System.out.println("Mensaje enviado al servidor");

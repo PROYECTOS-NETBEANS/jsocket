@@ -26,5 +26,15 @@ public interface OnConnectedListenerClient extends EventListener{
      * @param data
      * */		
     public void onRead(Object sender, OnConnectedEventClient data);
-
+    
+    /**
+     * Metodo que se genera cuando el cliente falla en el intento
+     * de conexion con el servidor.
+     */
+    public void onConnectRefused();
+    /**
+     * Metodo que se desencadena cuando no se pudo conectar al servidor
+     * durante un numero de intentos, por tanto finalizando la aplicacion
+     */
+    public void onConnectFinally();
 }

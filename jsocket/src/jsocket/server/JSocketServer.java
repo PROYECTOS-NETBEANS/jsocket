@@ -6,15 +6,22 @@ import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import javax.swing.event.EventListenerList;
+import jsocket.utils.OnReachableClientListener;
+
 import jsocket.utils.Paquete;
 import jsocket.utils.TipoMsg;
 
 /**
  * Servidor socket para que los clientes puedan conectarse
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com> */
-public class JSocketServer {
+public class JSocketServer implements OnReachableClientListener{
 
     private ManagerConections manager = null;
+    
+    /**
+     * Hilo para la verificar que las conexiones esten activas
+     */
+    private CheckClient verificador = null;
     
     private static HashMap<Integer, ComunicationServer> clientHashMap = new HashMap<>();
     private static EventListenerList listenerList = new EventListenerList();
@@ -31,7 +38,9 @@ public class JSocketServer {
             this.puerto = puerto;
             listenerList = new EventListenerList();
             skServer = new ServerSocket(this.puerto);
-            manager = new ManagerConections(skServer);            
+            manager = new ManagerConections(skServer);
+            verificador = new CheckClient(this);
+            verificador.start();
         }catch(IOException e){
             System.out.println("[JSocketServer.JSocketServer] " + e.getMessage());
         }
@@ -50,7 +59,7 @@ public class JSocketServer {
      * Metodo que devuelve la lista de todos los clientes
      * @return 
      */
-    public static HashMap getClients(){
+     synchronized public static HashMap getClients(){
         return JSocketServer.clientHashMap;
     }
     /**
@@ -174,5 +183,13 @@ public class JSocketServer {
     public void sendMessage(int keyClient, String msg, int keyOrigen){
         ComunicationServer cliente = (ComunicationServer) JSocketServer.getClients().get(keyClient);
         cliente.sendMessage(msg, TipoMsg.MSG_PRIVADO, keyOrigen);
+    }
+
+    /**
+     * Cuando se pierde la conexion con el servidor
+     */
+    @Override
+    public void onUnAvailable(int key) {
+        
     }
 }

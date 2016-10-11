@@ -3,6 +3,7 @@ import com.google.gson.Gson;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 import jsocket.utils.Paquete;
 import jsocket.utils.TipoMsg;
@@ -27,6 +28,9 @@ public class ComunicationServer extends Thread{
         this.RUN = true;
         this.key = key;
         this.obtenerFlujos();
+    }
+    public InetAddress getConexion(){
+        return skConexion.getInetAddress();
     }
     public int getKey(){
         return this.key;
@@ -136,11 +140,13 @@ public class ComunicationServer extends Thread{
      */
     private void cerrarConexion(){
         try {
-            RUN = false;
-            stRead.close();
-            stWrite.close();
-            skConexion.close();
-            System.out.println("pase comunicationServer.cerrarConexion");
+            if(!skConexion.isClosed()){
+                RUN = false;                
+                stRead.close();
+                stWrite.close();
+                skConexion.close();
+                System.out.println("pase comunicationServer.cerrarConexion");                
+            }
         } catch (IOException e) {
             System.out.println("[ComunicationServer.cerrarConexion] " + e.getMessage());
         }

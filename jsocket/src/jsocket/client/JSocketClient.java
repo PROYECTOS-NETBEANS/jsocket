@@ -39,10 +39,16 @@ public class JSocketClient implements OnReachableListener{
         this.comunicacion = null;
         listenerList = new EventListenerList();
         // esto es al inicio , ya que no tenemos ninguna conexion
-        reconnect = new ReconnectClient(this);
-        reconnect.start();
+        this.inicializarReconexion();
     }
-    
+    /**
+     * Metodo donde se inicializa el hilo que intentara realizar la conexion con el servidor
+     */
+    private void inicializarReconexion(){
+        reconnect = new ReconnectClient(this, IP_SERVER, PUERTO);
+        reconnect.setTimeInterval(2000);
+        reconnect.setNroIntento(4);
+    }
     /**
      * adiciona un escuchador de eventos a la lista de escuhadores
      * @param listener Escuchador de eventos
@@ -87,8 +93,30 @@ public class JSocketClient implements OnReachableListener{
               ((OnConnectedListenerClient)listeners[i]).onConnect("onconnected", sender);
           }
         }
-    }    
-    
+    }
+    /**
+     * Metodo que se lanza cuando no se pudo conectar al servidor
+     */
+    public static void onConnectRefused(){
+        Object[] listeners = JSocketClient.listenerList.getListenerList();
+        for (int i = 0; i < listeners.length; i++) {
+            if(listeners[i] instanceof OnConnectedListenerClient){
+               ((OnConnectedListenerClient) listeners[i]).onConnectRefused();
+            }
+        }
+    }
+    /**
+     * Metodo que se genera cuando se termino los intentos de conexion al servidor
+     */
+    public static void onConnectFinally(){
+        Object[] listeners = JSocketClient.listenerList.getListenerList();
+        for (int i = 0; i < listeners.length; i++) {
+            if(listeners[i] instanceof OnConnectedListenerClient){
+               ((OnConnectedListenerClient) listeners[i]).onConnectFinally();
+            }
+        }
+    }
+        
     /**
      * Metodo que lanza el evento de desconexion
      * @param paquete
@@ -109,26 +137,32 @@ public class JSocketClient implements OnReachableListener{
      * @param nick Nombre de usuario del cliente
      */
     public void conectarServidor(String nick){
-        this.userName = nick;
-        this.reconectarServidor();
+        this.userName = nick;        
+        this.reconnect.start();
     }
     private void reconectarServidor(){
         try {
+            comunicacion = null;
             skConexion = new Socket(IP_SERVER, PUERTO);
+            System.out.println("despues de conextar al server");
             comunicacion = new ComunicationClient(skConexion);
             this.sendConfiguration();
             comunicacion.start();
-            reconnect.setConfiguracion(skConexion.getInetAddress());
+            reconnect.setEstadoConexion(true);
             JSocketClient.onConnect(new Paquete("", -1, -1, TipoMsg.PQT_NONE));
         } catch (IOException e) {
-            System.out.println("[JSocketClient.conectarServidor]: " + e.getMessage());
-        }        
+            // No puede conectarse al servidor
+            System.out.println("[JSocketClient.reconectarServidor]: " + e.getMessage());
+            JSocketClient.onConnectRefused();         
+        }
     }
     /**
      * Metodo que realiza la desconexion con el servidor
      */
     public void desconectarServidor(){
-        this.comunicacion.cerrarConexion();
+        if(this.comunicacion != null){
+            this.comunicacion.cerrarConexion();
+        }        
     }
     
     public void sendMessagePrivado(String msg, int keyDestino){
@@ -145,7 +179,6 @@ public class JSocketClient implements OnReachableListener{
      * 
      */
     private void sendConfiguration(){
-        System.out.println("entre a enviar nick");
         comunicacion.sendMessage(userName, TipoMsg.PQT_CONFIGURATION, -1);
     }
 
@@ -155,12 +188,16 @@ public class JSocketClient implements OnReachableListener{
     @Override
     public void onUnAvailable() {
         System.out.println("intentando Reconectar");
-        //this.reconectarServidor();
+        //primero detengo todos los servicios para luego intentar conectar nuevamente
+        this.desconectarServidor();
+        
+        this.reconectarServidor();
     }
 
     @Override
-    public void OnLostConnection() {
+    public void onLostConnection() {
         System.out.println("finalizando intentos de conexion");
         this.reconnect.detener();
+        JSocketClient.onConnectFinally();
     }
 }

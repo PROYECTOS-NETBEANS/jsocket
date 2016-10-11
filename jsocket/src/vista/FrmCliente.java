@@ -33,6 +33,7 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
         //cliente = new JSocketClient(5555, "localhost");
         cliente.addEventListener(this);
         cliente.conectarServidor(lblnick.getText());
+        
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -52,6 +53,7 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
         jScrollPane2 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
         jLabel4 = new javax.swing.JLabel();
+        jlblEstado = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -83,6 +85,8 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
 
         jLabel4.setText("Usuarios Conectados");
 
+        jlblEstado.setText("ESTADO DE CONEXION AL SERVIDOR : ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -108,7 +112,9 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                                 .addContainerGap())))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(23, 23, 23)
+                .addComponent(jlblEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addContainerGap())
         );
@@ -128,7 +134,9 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
                     .addComponent(txtMensaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnEnviar))
                 .addGap(24, 24, 24)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jlblEstado))
                 .addContainerGap())
         );
 
@@ -204,6 +212,7 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
     private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel jlblEstado;
     private javax.swing.JLabel lblnick;
     private javax.swing.JList lstLista;
     private javax.swing.JTextField txtMensaje;
@@ -217,10 +226,23 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
     @Override
     public void onConnect(Object sender, OnConnectedEventClient data){
         this.setTitle("Cliente : " + lblnick.getText() + " Conectado al servidor");
+        jlblEstado.setText("CONEXION AL SERVIDOR : CONECTADO");
     }
 
     @Override
     public void onRead(Object sender, OnConnectedEventClient data){
         
     }
+    @Override
+    public void onConnectRefused(){
+        jlblEstado.setText("CONEXION AL SERVIDOR : DESCONECTADO");
+    }
+    /**
+     * Metodo que se desencadena cuando se agotaron
+     * los nros de intentos de conexion con el servidor, por tanto se finaliza todo
+     */
+    @Override
+    public void onConnectFinally(){
+        jlblEstado.setText("CONEXION AL SERVIDOR : INALCANZABLE INTENTELO MAS TARDE");
+    }    
 }

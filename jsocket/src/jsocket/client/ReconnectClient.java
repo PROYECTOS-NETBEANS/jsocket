@@ -1,7 +1,6 @@
 package jsocket.client;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import jsocket.utils.OnReachableListener;
@@ -30,25 +29,33 @@ public class ReconnectClient extends Thread{
      * Variable que define si el hilo esta funcional.
      */
     private boolean LISTING = true;
+
     /**
-     * Conexion al servidor.
+     * Estado que representa cuando se tiene una 
+     * conexion establecida al servidor [true : conectado al servidor]
      */
-    private InetAddress conexion = null;
+    private boolean estadoConexion = false;
+    
+    private int puerto = 5555;
+    
+    private String direccionIp = "localhost";
     
     private OnReachableListener listener = null;
     
-    public ReconnectClient(OnReachableListener listener){
+    public ReconnectClient(OnReachableListener listener, String ip, int port){
         this.listener = listener;
         this.LISTING = true;
         this.count = 0;
+        this.direccionIp = ip;
+        this.puerto = port;
+        this.estadoConexion = false;
     }
     /**
-     * Metodo que inicializa la configuracion del hilo
-     * antes de ejecutar el hilo.
-     * @param conexion Conexion al servidor
+     * Cambia el estado de conexion del socket al servidor
+     * @param stado True si la socket esta conectado al servidor, falso en otro caso.
      */
-    public void setConfiguracion(InetAddress conexion){
-        this.conexion = conexion;
+    public void setEstadoConexion(boolean stado){
+        this.estadoConexion = stado;
     }
     /**
      * Metodo que indica el tiempo que espera antes de intentar reconectar
@@ -58,6 +65,7 @@ public class ReconnectClient extends Thread{
     public void setTimeInterval(int times){
         this.timeInterval = times;
     }
+        
     /**
      * Metodo que indica el nro de intentos a reconectar
      * @param nro intentos de reconexion
@@ -66,20 +74,19 @@ public class ReconnectClient extends Thread{
         this.nroIntentos = nro;
     }
     /**
-     * Metodo que verifica si la conexion con el servidor esta disponible
+     * Metodo que verifica si existe una conexion disponible al servidor.
      * @return true: si la conexion valida, caso contrario false
      */
     private boolean isAvalibleConnection(){
-        try {
-                try(Socket sk = new Socket()){
-                    sk.connect(new InetSocketAddress(conexion, 5555), 500);
-                    System.out.println("es reachable " + conexion.getHostAddress() + " :  true");
-                }
-                return true;             
+        try (Socket sk = new Socket()) {                
+                sk.connect(new InetSocketAddress(direccionIp, puerto), 500);
+                //sk.connect(new InetSocketAddress( , puerto), 500);
+                sk.close();
+                return true;
         } catch (IOException ex) {
-            System.out.println("[ReconnectClient.isAvalibleConnection] " + ex.getMessage());
+            System.out.println("[ReconnectClient.isAvalibleConnection] No se encuentra conexion");
             return false;
-        }
+        }        
     }
     /**
      * Metodo que cambia a false la variable LISTING del hilo principal
@@ -94,16 +101,21 @@ public class ReconnectClient extends Thread{
         
         while(LISTING){
             try {
-                if(this.conexion != null){
-                    if(!this.isAvalibleConnection()){
-                        if(count < nroIntentos){
-                            //count = count + 1;
-                            listener.onUnAvailable();
-                        }else{
-                            // cuando ya se agotaron los intentos de conexion                            
-                            listener.OnLostConnection();
-                        }                        
-                    }              
+                if(!this.isAvalibleConnection()){
+                    if(count < nroIntentos){
+                        count = count + 1;
+                        estadoConexion = false;
+                        listener.onUnAvailable();
+                    }else{
+                        // cuando ya se agotaron los intentos de conexion
+                        listener.onLostConnection();
+                    }                        
+                }else{
+                    if(!estadoConexion){// no esta conectado 
+                        System.out.println("primera conexion");
+                        // conectar al servidor
+                        listener.onUnAvailable();                        
+                    }
                 }
                 Thread.sleep(timeInterval);
             } catch (InterruptedException ex) {
