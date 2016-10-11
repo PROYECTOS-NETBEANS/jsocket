@@ -219,7 +219,7 @@ public class FrmServidor extends javax.swing.JFrame implements OnConnectedListen
             this.removerUsuario(data.getOrigenClient());
         }
     }
-
+falta probar si funciona el ondisconec con el ping al cliente
     @Override
     public void onRead(Object sender, OnConnectedEventServer data, String userName) {
         System.out.println("Mensaje llegado de : " + String.valueOf(data.getOrigenClient()));

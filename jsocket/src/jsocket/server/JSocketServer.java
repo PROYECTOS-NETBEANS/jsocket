@@ -186,10 +186,11 @@ public class JSocketServer implements OnReachableClientListener{
     }
 
     /**
-     * Cuando se pierde la conexion con el servidor
+     * Ocurre cuando se pierde la conexion con el servidor
      */
     @Override
     public void onUnAvailable(int key) {
-        
+        //primero cierro las conexiones del cliente
+        (JSocketServer.clientHashMap.get(key)).onDisconnect();
     }
 }
