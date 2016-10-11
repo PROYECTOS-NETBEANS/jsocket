@@ -70,7 +70,7 @@ public class ComunicationClient extends Thread{
                 stRead.close();
                 stWrite.close();
                 skConexion.close();
-                System.out.println("pase cerrarConexion");                
+                System.out.println("ComunicationClient.cerrarConexion pase ");
             }
         } catch (IOException ex) {
             System.out.println("[ComunicationClient.cerrarConexion] " + ex.getMessage());
@@ -92,7 +92,7 @@ public class ComunicationClient extends Thread{
      * @param tipo Tipo de mensaje que se enviara
      * @param keyDestino El usuario a donde se enviara el mensaje
      */
-    public void sendMessage(String msg, TipoMsg tipo, int keyDestino){
+    synchronized public void sendMessage(String msg, TipoMsg tipo, int keyDestino){
         try {
             Paquete paquete = new Paquete(msg, -1, keyDestino, tipo);
             stWrite.writeUTF(this.toString(paquete));
@@ -100,6 +100,7 @@ public class ComunicationClient extends Thread{
             System.out.println("Mensaje enviado al servidor");
         } catch (IOException e) {
             System.out.println("[ComunicationClient.sendMessage] " + e.getMessage());
+            JSocketClient.onConnectRefused();
         }
     }
     /**

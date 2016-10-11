@@ -29,12 +29,18 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
         }
         lblnick.setText(nick);
         modelo = new DefaultListModel();
-        cliente = new JSocketClient(5555, "192.168.61.129");
+        //cliente = new JSocketClient(5555, "192.168.61.129");
         //cliente = new JSocketClient(5555, "localhost");
+        cliente = new JSocketClient(5555, "192.168.0.113");
         cliente.addEventListener(this);
         cliente.conectarServidor(lblnick.getText());
         
     }
+    private void addMessageList(String msg){
+        modelo.addElement(msg);
+        lstMsg.setModel(modelo);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -45,7 +51,7 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        lstLista = new javax.swing.JList();
+        lstMsg = new javax.swing.JList();
         txtMensaje = new javax.swing.JTextField();
         btnEnviar = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -62,7 +68,7 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
             }
         });
 
-        jScrollPane1.setViewportView(lstLista);
+        jScrollPane1.setViewportView(lstMsg);
 
         btnEnviar.setText(">");
         btnEnviar.setActionCommand("");
@@ -157,16 +163,12 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
             cliente.desconectarServidor();
     }//GEN-LAST:event_formWindowClosing
 
-    private void enviarMensaje(){
-        
+    private void enviarMensaje(){        
         this.addMessageList(lblnick.getText() + "> " + txtMensaje.getText());
         System.out.println("vista entrando enviar mensaje 2");
         cliente.sendMessageAll(txtMensaje.getText());
     }
-    private void addMessageList(String msg){
-        modelo.addElement(msg);
-        lstLista.setModel(modelo);
-    }
+
     /**
      * @param args the command line arguments
      */
@@ -214,7 +216,7 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel jlblEstado;
     private javax.swing.JLabel lblnick;
-    private javax.swing.JList lstLista;
+    private javax.swing.JList lstMsg;
     private javax.swing.JTextField txtMensaje;
     // End of variables declaration//GEN-END:variables
 
@@ -231,7 +233,7 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
 
     @Override
     public void onRead(Object sender, OnConnectedEventClient data){
-        
+        this.addMessageList("server> " + data.getMessage());
     }
     @Override
     public void onConnectRefused(){

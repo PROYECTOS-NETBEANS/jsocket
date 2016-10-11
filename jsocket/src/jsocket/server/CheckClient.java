@@ -14,7 +14,7 @@ import jsocket.utils.OnReachableClientListener;
 
 /**
  * 
- * @author Sammy Guergachi <sguergachi at gmail.com>
+ * @author Alex Limbert Yalusqui Godoy <limbertyalusqui@gmail.com>
  */
 public class CheckClient extends Thread{
     
@@ -24,9 +24,9 @@ public class CheckClient extends Thread{
     
     private OnReachableClientListener listener = null;
     
-    public CheckClient(OnReachableClientListener listener){
+    public CheckClient(OnReachableClientListener listener, int timeInterval){
         this.LISTING = true;
-        this.timeInterval = 1000;
+        this.timeInterval = timeInterval;
         this.listener = listener;
     }
     

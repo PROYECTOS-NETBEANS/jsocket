@@ -46,7 +46,7 @@ public class JSocketClient implements OnReachableListener{
      */
     private void inicializarReconexion(){
         reconnect = new ReconnectClient(this, IP_SERVER, PUERTO);
-        reconnect.setTimeInterval(2000);
+        reconnect.setTimeInterval(3000);
         reconnect.setNroIntento(4);
     }
     /**
@@ -144,11 +144,12 @@ public class JSocketClient implements OnReachableListener{
         try {
             comunicacion = null;
             skConexion = new Socket(IP_SERVER, PUERTO);
+            reconnect.setEstadoConexion(true);
+            reconnect.setConexion(skConexion.getInetAddress());
             System.out.println("despues de conextar al server");
             comunicacion = new ComunicationClient(skConexion);
             this.sendConfiguration();
             comunicacion.start();
-            reconnect.setEstadoConexion(true);
             JSocketClient.onConnect(new Paquete("", -1, -1, TipoMsg.PQT_NONE));
         } catch (IOException e) {
             // No puede conectarse al servidor
@@ -199,5 +200,12 @@ public class JSocketClient implements OnReachableListener{
         System.out.println("finalizando intentos de conexion");
         this.reconnect.detener();
         JSocketClient.onConnectFinally();
+    }
+    /**
+     * Metodo que envia mensajes al servidor cada cierto tiempo
+     */
+    @Override
+    public void onMessageEco(){
+        comunicacion.sendMessage("", TipoMsg.PQT_ICMP, -1);
     }
 }

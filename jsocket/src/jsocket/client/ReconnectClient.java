@@ -1,6 +1,7 @@
 package jsocket.client;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import jsocket.utils.OnReachableListener;
@@ -42,6 +43,8 @@ public class ReconnectClient extends Thread{
     
     private OnReachableListener listener = null;
     
+    private InetAddress conexion = null;
+    
     public ReconnectClient(OnReachableListener listener, String ip, int port){
         this.listener = listener;
         this.LISTING = true;
@@ -56,6 +59,9 @@ public class ReconnectClient extends Thread{
      */
     public void setEstadoConexion(boolean stado){
         this.estadoConexion = stado;
+    }
+    public void setConexion(InetAddress conexion){
+        this.conexion = conexion;
     }
     /**
      * Metodo que indica el tiempo que espera antes de intentar reconectar
@@ -82,12 +88,35 @@ public class ReconnectClient extends Thread{
                 sk.connect(new InetSocketAddress(direccionIp, puerto), 500);
                 //sk.connect(new InetSocketAddress( , puerto), 500);
                 sk.close();
+                System.out.println("isAvalibleConnection : true");
                 return true;
         } catch (IOException ex) {
             System.out.println("[ReconnectClient.isAvalibleConnection] No se encuentra conexion");
             return false;
         }        
     }
+    /**
+     * verifica la conexion con el inetAddress
+     * @return 
+     */
+    private boolean isAvalibleConnectionInetAddress(){
+        try {
+                if(conexion != null){
+                    if(conexion.isReachable(500)){
+                        System.out.println("isAvalibleConnection : true");
+                        return true;
+                    }else{
+                        System.out.println("isAvalibleConnection : false");
+                        return false;
+                    }
+                }else{
+                    return false;
+                }
+        } catch (IOException ex) {
+            System.out.println("[ReconnectClient.isAvalibleConnection] No se encuentra conexion");
+            return false;
+        }        
+    }    
     /**
      * Metodo que cambia a false la variable LISTING del hilo principal
      */
@@ -100,12 +129,30 @@ public class ReconnectClient extends Thread{
     public void run(){
         
         while(LISTING){
+            try {                
+                listener.onMessageEco();
+                Thread.sleep(timeInterval);
+            } catch (InterruptedException ex) {
+                System.out.println("[ReconnectClient.run] " + ex.getMessage());
+            }
+        }
+    }
+    /*
+    
+    @Override
+    @SuppressWarnings("SleepWhileInLoop")
+    public void run(){
+        
+        while(LISTING){
             try {
-                if(!this.isAvalibleConnection()){
+                if(!this.isAvalibleConnectionInetAddress()){
+                //if(!this.isAvalibleConnection()){
                     if(count < nroIntentos){
                         count = count + 1;
                         estadoConexion = false;
+                        conexion = null;
                         listener.onUnAvailable();
+                        
                     }else{
                         // cuando ya se agotaron los intentos de conexion
                         listener.onLostConnection();
@@ -122,5 +169,8 @@ public class ReconnectClient extends Thread{
                 System.out.println("[ReconnectClient.run] " + ex.getMessage());
             }
         }
-    }
+    }    
+    
+    
+    */
 }

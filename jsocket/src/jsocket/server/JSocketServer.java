@@ -21,7 +21,7 @@ public class JSocketServer implements OnReachableClientListener{
     /**
      * Hilo para la verificar que las conexiones esten activas
      */
-    private CheckClient verificador = null;
+    //private CheckClient verificador = null;
     
     private static HashMap<Integer, ComunicationServer> clientHashMap = new HashMap<>();
     private static EventListenerList listenerList = new EventListenerList();
@@ -33,14 +33,16 @@ public class JSocketServer implements OnReachableClientListener{
      * Constructor del socket servidor
      * @param puerto Es el puerto donde se iniciara el socket servidor
      */
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public JSocketServer(int puerto){
         try{
             this.puerto = puerto;
             listenerList = new EventListenerList();
             skServer = new ServerSocket(this.puerto);
             manager = new ManagerConections(skServer);
-            verificador = new CheckClient(this);
-            verificador.start();
+            
+            //verificador = new CheckClient(this, 2000);
+            //verificador.start();
         }catch(IOException e){
             System.out.println("[JSocketServer.JSocketServer] " + e.getMessage());
         }

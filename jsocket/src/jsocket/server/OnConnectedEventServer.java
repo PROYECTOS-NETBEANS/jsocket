@@ -13,28 +13,7 @@ public class OnConnectedEventServer extends EventObject{
     public OnConnectedEventServer(Object source) {
         super(source);
     }
-    /**
-     * Metodo que envia mensajes a todos los clientes que estan conectados
-     * @param msg Mensaje que se enviara a los clientes conectados
-     *
-    public void sendMessageAll(String msg){
-        if(this.getSource() instanceof ManagerConections)
-            ((ManagerConections) this.getSource()).sendMessageAll(msg);
-    }
-    */
-    
-    /**
-     * Devuelve la ip del servidor despues de iniciar el servidor
-     * @return String
-     */
-    public String getIpServer(){
-        
-        if(this.getSource() instanceof Paquete){
-            return ((Paquete) this.getSource()).getMsg();
-        }else{
-            return "Ip no encontrada !!";
-        }
-    }
+
     /**
      * Obtiene el identificador de cliente que envio el mensaje
      * @return Identificador del cliente que origino el mensaje
