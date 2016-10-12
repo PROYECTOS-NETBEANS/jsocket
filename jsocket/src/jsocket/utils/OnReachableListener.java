@@ -18,8 +18,4 @@ public interface OnReachableListener extends EventListener{
      */
     public void onLostConnection();
     
-    /**
-     * Envia un mensaje de comprobacion al servidor.
-     */
-    public void onMessageEco();
 }

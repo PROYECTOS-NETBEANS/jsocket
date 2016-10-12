@@ -92,15 +92,37 @@ public class ComunicationClient extends Thread{
      * @param tipo Tipo de mensaje que se enviara
      * @param keyDestino El usuario a donde se enviara el mensaje
      */
-    synchronized public void sendMessage(String msg, TipoMsg tipo, int keyDestino){
-        try {
-            Paquete paquete = new Paquete(msg, -1, keyDestino, tipo);
-            stWrite.writeUTF(this.toString(paquete));
+    public void sendMessage(String msg, TipoMsg tipo, int keyDestino){
+
+        Paquete paquete = new Paquete(msg, -1, keyDestino, tipo);
+        if(!this.sendMessage(this.toString(paquete))){
+            System.out.println("no se pudo enviar el mensaje");
+            JSocketClient.onConnectRefused();
+        }
+    }
+    synchronized private boolean sendMessage(String paquete){
+        try {         
+            stWrite.writeUTF(paquete);
             stWrite.flush();
             System.out.println("Mensaje enviado al servidor");
+            return true;
         } catch (IOException e) {
             System.out.println("[ComunicationClient.sendMessage] " + e.getMessage());
-            JSocketClient.onConnectRefused();
+            return false;
+        }
+    }
+    /**
+     * Envia un mensaje de eco al servidor
+     * @return 
+     */
+    public boolean sendMessageEco(){
+
+        Paquete paquete = new Paquete("", -1, -1, TipoMsg.PQT_ICMP);
+        if(!this.sendMessage(this.toString(paquete))){
+            System.out.println("mensaje de eco no se pudo enviar");
+            return false;
+        }else{
+            return true;
         }
     }
     /**
