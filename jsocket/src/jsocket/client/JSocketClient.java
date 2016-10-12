@@ -46,7 +46,7 @@ public class JSocketClient implements OnReachableListener{
      */
     private void inicializarReconexion(){
         reconnect = new ReconnectClient(this);
-        reconnect.setTimeInterval(3000);
+        reconnect.setTimeInterval(5000);
         reconnect.setNroIntento(4);
     }
     /**

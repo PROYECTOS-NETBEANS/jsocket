@@ -126,14 +126,20 @@ public class ComunicationServer extends Thread{
     private void onRead(Paquete paquete){
         paquete.setOrigen(this.key);
         
-        if(paquete.getTipoMsg() == TipoMsg.PQT_CONFIGURATION){
-            //es paquete que llega con el nick
-            this.userName = paquete.getMsg();
-            JSocketServer.onConnect(paquete);
-        }else{
-            // si llega un paquete desde el cliente
-            JSocketServer.onRead(paquete, this.userName);
-        }        
+        switch(paquete.getTipoMsg()){
+            case PQT_CONFIGURATION:
+                //es paquete que llega con el nick
+                this.userName = paquete.getMsg();
+                JSocketServer.onConnect(paquete);                
+                break;
+            case PQT_ICMP:
+                System.out.println("msg: mensaje eco");
+                break;
+            default:
+                // si llega un paquete desde el cliente
+                JSocketServer.onRead(paquete, this.userName);
+        }
+
     }
     /**
      * Cerramos el stream el socket e hilo
