@@ -36,6 +36,7 @@ public class ReconnectClient extends Thread{
     }
     public void setConexion(ComunicationClient cnx){
         this.conexion = cnx;
+        this.count = 0;
     }
     /**
      * Metodo que indica el tiempo que espera antes de intentar reconectar

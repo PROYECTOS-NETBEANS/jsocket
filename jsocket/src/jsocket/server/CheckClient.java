@@ -6,11 +6,9 @@
 
 package jsocket.server;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import jsocket.utils.OnReachableClientListener;
-
 
 /**
  * 
@@ -56,13 +54,11 @@ public class CheckClient extends Thread{
         Iterator<ComunicationServer> it = clientes.values().iterator();
         while(it.hasNext()){
             cliente = it.next();
-            try {
-                boolean sw = cliente.getConexion().isReachable(500);
-                System.out.println( "< " + cliente.getConexion().getHostAddress() + " >" + String.valueOf(cliente.getKey()) + ": " + String.valueOf(sw));
-            } catch (IOException ex) {
-                System.out.println("[CheckClient.estaConectado] no se encontro conexion");
-                return cliente.getKey();
-            }
+                boolean sw = cliente.sendMessageEco();
+                if(!sw){
+                    System.out.println("cliente desconectado : " + String.valueOf(cliente.getKey()));
+                    return cliente.getKey();
+                }
         }
         return -1;
     }

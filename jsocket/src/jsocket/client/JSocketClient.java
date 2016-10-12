@@ -101,6 +101,7 @@ public class JSocketClient implements OnReachableListener{
         Object[] listeners = JSocketClient.listenerList.getListenerList();
         for (int i = 0; i < listeners.length; i++) {
             if(listeners[i] instanceof OnConnectedListenerClient){
+                System.out.println("[jsocketClient.onConnectRefused] cliente desconectado");
                ((OnConnectedListenerClient) listeners[i]).onConnectRefused();
             }
         }
@@ -147,7 +148,7 @@ public class JSocketClient implements OnReachableListener{
             System.out.println("despues de conextar al server");
             comunicacion = new ComunicationClient(skConexion);
             this.sendConfiguration();
-            reconnect.setConexion(comunicacion);
+            reconnect.setConexion(comunicacion);            
             comunicacion.start();
             JSocketClient.onConnect(new Paquete("", -1, -1, TipoMsg.PQT_NONE));
         } catch (IOException e) {

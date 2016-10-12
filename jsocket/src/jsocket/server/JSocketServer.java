@@ -188,7 +188,7 @@ public class JSocketServer implements OnReachableClientListener{
     }
 
     /**
-     * Ocurre cuando se pierde la conexion con el servidor
+     * Ocurre cuando se pierde la conexion con algun cliente
      */
     @Override
     public void onUnAvailable(int key) {

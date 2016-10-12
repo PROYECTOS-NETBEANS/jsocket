@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import jsocket.server.JSocketServer;
 import jsocket.utils.Paquete;
 import jsocket.utils.TipoMsg;
 /**
@@ -45,12 +46,27 @@ public class ComunicationClient extends Thread{
     private void leerDatos(){
         try{
             String data = stRead.readUTF();
-            JSocketClient.onRead(this.toObject(data));
+            this.onRead(this.toObject(data));
         }catch(IOException e){
             System.out.println("[ComunicationClient.leerDatos] no se encuentra conexion");
             this.desconectado();
         }        
     }
+    /**
+     * Metodo donde se verifican los tipos de paquetes que llegan del servidor
+     * @param paquete Mensaje encapsulado que llega del servidor.
+     */
+    private void onRead(Paquete paquete){        
+        switch(paquete.getTipoMsg()){
+            case PQT_ICMP:
+                System.out.println("llego eco del server");
+                break;
+            default:
+                // si llega un paquete desde el cliente
+                JSocketClient.onRead(paquete);
+        }
+    }
+
     private Paquete toObject(String data){
         Gson g = new Gson();
         Paquete paquete = g.fromJson(data, Paquete.class);

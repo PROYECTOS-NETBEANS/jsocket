@@ -3,7 +3,6 @@ import com.google.gson.Gson;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.Socket;
 import jsocket.utils.Paquete;
 import jsocket.utils.TipoMsg;
@@ -28,9 +27,6 @@ public class ComunicationServer extends Thread{
         this.RUN = true;
         this.key = key;
         this.obtenerFlujos();
-    }
-    public InetAddress getConexion(){
-        return skConexion.getInetAddress();
     }
     public int getKey(){
         return this.key;
@@ -72,18 +68,41 @@ public class ComunicationServer extends Thread{
      * @param keyOrigen El cliente o servidor que envia el mensaje
      */
     public void sendMessage(String msg, TipoMsg tipo, int keyOrigen){
-        try {
-            Paquete paquete = new Paquete(msg, keyOrigen, this.key, tipo);
-            stWrite.writeUTF(this.toString(paquete));
-            stWrite.flush();
-            System.out.println("Mensaje enviado a los cliente");
-        } catch (IOException e) {
-            System.out.println("[ComunicationClient.sendMessage] " + e.getMessage());
+
+        Paquete paquete = new Paquete(msg, keyOrigen, this.key, tipo);
+        if(!this.sendMessage(this.toString(paquete))){
+            System.out.println("[ComunicationClient.sendMessage] no se pudo enviar msg al cliente");
+            System.out.println("aqui nesecito saltar un evento !!!");
+        }
+    }
+    
+    /**
+     * Envia un mensaje de eco al cliente.
+     * @return true si se envio el mensaje correctamente, falso en otro caso.
+     */
+    public boolean sendMessageEco(){
+
+        Paquete paquete = new Paquete("", -1, -1, TipoMsg.PQT_ICMP);
+        if(!this.sendMessage(this.toString(paquete))){
+            System.out.println("Eco al cliente no se envio!");
+            return false;
+        }else{
+            return true;
         }
     }
 
-    
-    
+    synchronized private boolean sendMessage(String paquete){
+        try {         
+            stWrite.writeUTF(paquete);
+            stWrite.flush();
+            System.out.println("Mensaje enviado al cliente");
+            return true;
+        } catch (IOException e) {
+            System.out.println("[ComunicationServer.sendMessage] " + e.getMessage());
+            return false;
+        }
+    }
+        
     public void onDisconnect(){
         if(!skConexion.isClosed()){
             System.out.println("onDisconnect");
@@ -111,7 +130,6 @@ public class ComunicationServer extends Thread{
     private void leerDatos(){
         try{
             System.out.println("esperando paquetes del cliente");
-
             String data = stRead.readUTF();
             System.out.println("paquete llegado");
             Paquete paquete = this.toObject(data);
@@ -139,7 +157,6 @@ public class ComunicationServer extends Thread{
                 // si llega un paquete desde el cliente
                 JSocketServer.onRead(paquete, this.userName);
         }
-
     }
     /**
      * Cerramos el stream el socket e hilo

@@ -9,13 +9,13 @@ package jsocket.utils;
 import java.util.EventListener;
 
 /**
- * 
- * @author Sammy Guergachi <sguergachi at gmail.com>
+ * Escuhador de eventos de los clientes que se desconecten
+ * @author Alex Limbert Yalusqui <limbertx@gmail.com>
  */
 public interface OnReachableClientListener extends EventListener{
     /**
-     * Ocurre cuando se perdio la conexion con el servidor.
-     * @param key identificador del cliente que se 
+     * Ocurre cuando se perdio la conexion con el cliente
+     * @param key identificador del cliente que acaba de desconectarse
      */
     public void onUnAvailable(int key);
 

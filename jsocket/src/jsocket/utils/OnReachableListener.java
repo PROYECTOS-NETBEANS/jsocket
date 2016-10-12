@@ -4,7 +4,7 @@ package jsocket.utils;
 import java.util.EventListener;
 
 /**
- * 
+ * Escuchador de eventos de desconecion al servidor.
  * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
  */
 public interface OnReachableListener extends EventListener{
