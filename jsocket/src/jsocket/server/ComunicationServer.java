@@ -84,7 +84,7 @@ public class ComunicationServer extends Thread{
 
         Paquete paquete = new Paquete("", -1, -1, TipoMsg.PQT_ICMP);
         if(!this.sendMessage(this.toString(paquete))){
-            System.out.println("Eco al cliente no se envio!");
+            System.out.println("Eco no envio!");
             return false;
         }else{
             return true;

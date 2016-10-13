@@ -66,13 +66,22 @@ public class ComunicationClient extends Thread{
                 JSocketClient.onRead(paquete);
         }
     }
-
+    /**
+     * Metodo que comvierte un String a objeto paquete
+     * @param data
+     * @return 
+     */
     private Paquete toObject(String data){
         Gson g = new Gson();
         Paquete paquete = g.fromJson(data, Paquete.class);
         
         return paquete;
     }
+    /**
+     * Metodo que convierte un objeto paquete a string
+     * @param paquete
+     * @return 
+     */
     private String toString(Paquete paquete){
         Gson g = new Gson();
         String data = g.toJson(paquete);
