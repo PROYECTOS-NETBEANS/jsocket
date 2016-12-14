@@ -5,7 +5,7 @@ import java.util.EventListener;
 
 /**
  * Escuchador de eventos de desconecion al servidor.
- * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
+ * @author Alex Limbert Yalusqui
  */
 public interface OnReachableListener extends EventListener{
     /**

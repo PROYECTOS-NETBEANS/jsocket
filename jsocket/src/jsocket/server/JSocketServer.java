@@ -13,7 +13,8 @@ import jsocket.utils.TipoMsg;
 
 /**
  * Servidor socket para que los clientes puedan conectarse
- * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com> */
+ * @author Alex Limbert Yalusqui
+*/
 public class JSocketServer implements OnReachableClientListener{
 
     private ManagerConections manager = null;
@@ -59,7 +60,7 @@ public class JSocketServer implements OnReachableClientListener{
     }
     /**
      * Metodo que devuelve la lista de todos los clientes
-     * @return 
+     * @return Devuelve un map con los clientes
      */
      synchronized public static HashMap getClients(){
         return JSocketServer.clientHashMap;
@@ -107,7 +108,7 @@ public class JSocketServer implements OnReachableClientListener{
      /**
      * Metodo que lanza el evento de lectura del servidor
      * @param paquete Paquete con la informacion que llega desde el cliente
-     * @param userName
+     * @param userName  Nombre de usuario unico
      */
     public static void onRead(Paquete paquete, String userName){
         Object[] listeners = JSocketServer.listenerList.getListenerList();
@@ -121,7 +122,7 @@ public class JSocketServer implements OnReachableClientListener{
 
     /**
      * Metodo que lanza el evento cuando se conecta un cliente al servidor
-     * @param paquete
+     * @param paquete Es un paquete donde viene encapsulado el mesaje
      */
     public static void onConnect(Paquete paquete){
         Object[] listeners = JSocketServer.listenerList.getListenerList();
@@ -137,14 +138,15 @@ public class JSocketServer implements OnReachableClientListener{
     
     /**
      * Metodo que lanza el evento de desconexion
-     * @param paquete
+     * @param paquete Paquete donde viene encapsulado el mensaje
+     * @param userName Nombre de usuario del cliente que se desconecta
      */
-    public static void onDisconnect(Paquete paquete){
+    public static void onDisconnect(Paquete paquete, String userName){
         Object[] listeners = JSocketServer.listenerList.getListenerList();
         for(int i = 0; i<listeners.length; i++){
           if(listeners[i] instanceof OnConnectedListenerServer){
               OnConnectedEventServer sender = new OnConnectedEventServer(paquete);
-              ((OnConnectedListenerServer)listeners[i]).onDisconnect("disconnect", sender);
+              ((OnConnectedListenerServer)listeners[i]).onDisconnect("disconnect", sender, userName);
           }
         }       
     }
@@ -165,7 +167,7 @@ public class JSocketServer implements OnReachableClientListener{
     /**
      * Metodo que envia un mensaje a todos los clientes
      * @param msg Mensaje que se enviara a todos los clientes
-     * @param keyOrigen
+     * @param keyOrigen Identificador primario del origen
      */
     public void sendMessageAll(String msg, int keyOrigen){
         HashMap clientes = JSocketServer.getClients();
@@ -180,7 +182,7 @@ public class JSocketServer implements OnReachableClientListener{
      * Envia un mensaje a un cliente
      * @param keyClient Cliente al que se tiene que enviar el mensaje
      * @param msg Mensaje que se enviara al cliente
-     * @param keyOrigen
+     * @param keyOrigen Cliente desde donde se origina el mensaje
      */
     public void sendMessage(int keyClient, String msg, int keyOrigen){
         ComunicationServer cliente = (ComunicationServer) JSocketServer.getClients().get(keyClient);

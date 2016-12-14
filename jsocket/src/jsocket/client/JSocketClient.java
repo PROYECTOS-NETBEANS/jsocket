@@ -8,7 +8,7 @@ import jsocket.utils.Paquete;
 import jsocket.utils.TipoMsg;
 /**
  * Clase socket del cliente que envia y recibe mensajes del servidor
- * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
+ * @author Alex Limbert Yalusqui 
  */
 public class JSocketClient implements OnReachableListener{
     
@@ -120,7 +120,7 @@ public class JSocketClient implements OnReachableListener{
         
     /**
      * Metodo que lanza el evento de desconexion
-     * @param paquete
+     * @param paquete el es paquete donde va encapsulado el mensaje
      */
     public static void onDisconnect(Paquete paquete){
         Object[] listeners = JSocketClient.listenerList.getListenerList();

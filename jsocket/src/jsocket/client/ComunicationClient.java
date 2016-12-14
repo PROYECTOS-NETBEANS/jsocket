@@ -6,12 +6,11 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import jsocket.server.JSocketServer;
 import jsocket.utils.Paquete;
 import jsocket.utils.TipoMsg;
 /**
  * Clase escuchador que envia y recibe mensajes del servidor
- * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
+ * @author Alex Limbert Yalusqui
  */
 public class ComunicationClient extends Thread{
     
@@ -138,7 +137,7 @@ public class ComunicationClient extends Thread{
     }
     /**
      * Envia un mensaje de eco al servidor
-     * @return 
+     * @return Envia un mensaje eco al servidor
      */
     public boolean sendMessageEco(){
 

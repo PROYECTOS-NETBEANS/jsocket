@@ -8,7 +8,7 @@ import jsocket.utils.Paquete;
 import jsocket.utils.TipoMsg;
 /**
  * clase escuchador que envia y recibe los mensajes que llegan de los clientes
- * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
+ * @author Alex Limbert Yalusqui
  */
 public class ComunicationServer extends Thread{
     private boolean RUN = true;
@@ -107,7 +107,7 @@ public class ComunicationServer extends Thread{
         if(!skConexion.isClosed()){
             System.out.println("onDisconnect");
             this.cerrarConexion();
-            JSocketServer.onDisconnect(new Paquete("desconectado", this.key, this.key, TipoMsg.PQT_DESCONECTADO));            
+            JSocketServer.onDisconnect(new Paquete("desconectado", this.key, this.key, TipoMsg.PQT_DESCONECTADO), this.userName);
         }
     }
 

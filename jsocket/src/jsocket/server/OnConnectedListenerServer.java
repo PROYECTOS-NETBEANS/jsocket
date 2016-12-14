@@ -9,7 +9,7 @@ import java.util.EventListener;
 
 /**
  * Interface que escucha los eventos del servidor socket
- * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
+ * @author Alex Limbert Yalusqui
  */
 public interface OnConnectedListenerServer  extends EventListener{
     
@@ -23,6 +23,7 @@ public interface OnConnectedListenerServer  extends EventListener{
      * Se produce cuando un cliente se conecta al servidor
      * @param sender Referencia del objeto que esta generando el evento
      * @param data   Evento que es generado
+     * @param userName nombre de usuario del cliente que es unico
      * */
     public void onConnect(Object sender, OnConnectedEventServer data, String userName);
 
@@ -30,13 +31,15 @@ public interface OnConnectedListenerServer  extends EventListener{
      * Se produce cuando un cliente se desconecta del servidor
      * @param sender Referencia del objeto que esta generando el evento
      * @param data   Evento que es generado
+     * @param nickName Nombre de usuario que se desconecta
      * */
-    public void onDisconnect(Object sender, OnConnectedEventServer data);	
+    public void onDisconnect(Object sender, OnConnectedEventServer data, String nickName);	
 
     /**
      * Se produce cuando llegan mensajes del cliente
      * @param sender Referencia del objeto que genera el evento
      * @param data   Evento que es generado [ComunicationServer]
+     * @param userName Nombre del cliente unico
      * */
     public void onRead(Object sender, OnConnectedEventServer data, String userName);
     

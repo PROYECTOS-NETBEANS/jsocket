@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 /**
  * Administrador de conexiones de los clientes, donde estan todos los clientes conectados
- * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com> 
+ * @author Alex Limbert Yalusqui
  */
 public class ManagerConections extends Thread{
     

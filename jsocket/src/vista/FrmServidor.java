@@ -7,7 +7,7 @@ import jsocket.server.OnConnectedEventServer;
 import jsocket.server.OnConnectedListenerServer;
 /**
  * 
- * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
+ * @author Alex Limbert Yalusqui
  */
 public class FrmServidor extends javax.swing.JFrame implements OnConnectedListenerServer{
 
@@ -182,6 +182,7 @@ public class FrmServidor extends javax.swing.JFrame implements OnConnectedListen
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new FrmServidor().setVisible(true);
             }
@@ -211,7 +212,7 @@ public class FrmServidor extends javax.swing.JFrame implements OnConnectedListen
     }
 
     @Override
-    public void onDisconnect(Object sender, OnConnectedEventServer data) {
+    public void onDisconnect(Object sender, OnConnectedEventServer data, String userName) {
         
         if(data.getClientDisconnect()){
             System.out.println("vista.onDisconnect >> key : " + String.valueOf(data.getOrigenClient()));
@@ -219,7 +220,7 @@ public class FrmServidor extends javax.swing.JFrame implements OnConnectedListen
             this.removerUsuario(data.getOrigenClient());
         }
     }
-//falta probar si funciona el ondisconec con el ping al cliente
+    //falta probar si funciona el ondisconec con el ping al cliente
     @Override
     public void onRead(Object sender, OnConnectedEventServer data, String userName) {
         System.out.println("Mensaje llegado de : " + String.valueOf(data.getOrigenClient()));

@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package jsocket.server;
 
 import java.util.HashMap;
@@ -11,8 +5,8 @@ import java.util.Iterator;
 import jsocket.utils.OnReachableClientListener;
 
 /**
- * 
- * @author Alex Limbert Yalusqui Godoy <limbertyalusqui@gmail.com>
+ * Clase encargada de verificar si la conexion del cliente esta activa
+ * @author Alex Limbert Yalusqui Godoy
  */
 public class CheckClient extends Thread{
     

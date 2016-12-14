@@ -3,27 +3,27 @@ package jsocket.client;
 import java.util.EventListener;
 /**
  * Intefaza que escucha los eventos del cliente socket
- * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
+ * @author Alex Limbert Yalusqui 
  */
 public interface OnConnectedListenerClient extends EventListener{
     /**
      * Se produce cuando se conecta al servidor
      * @param sender Referencia del objeto que esta generando el evento
-     * @param data
+     * @param data El evento que se generado
      * */
     public void onConnect(Object sender, OnConnectedEventClient data);
 
     /**
      * Se produce cuando se desconecta del servidor
      * @param sender Referencia del objeto que esta generando el evento
-     * @param data
+     * @param data El evento que se generado
      * */	
     public void onDisconnect(Object sender, OnConnectedEventClient data);
 
     /**
      * Se produce cuando llegan mensajes del servidor
      * @param sender Referencia del objeto [ComunicationClient]
-     * @param data
+     * @param data El evento que se generado
      * */		
     public void onRead(Object sender, OnConnectedEventClient data);
     

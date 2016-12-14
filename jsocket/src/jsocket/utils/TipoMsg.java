@@ -8,7 +8,7 @@ package jsocket.utils;
 
 /**
  * 
- * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
+ * @author Alex Limbert Yalusqui
  */
 public enum TipoMsg {
     MSG_PUBLICO,

@@ -4,7 +4,8 @@ import java.util.EventObject;
 import jsocket.utils.Paquete;
 /**
  * Evento que se lanza dentro de los escuchadores del cliente
- * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com> */
+ * @author Alex Limbert Yalusqui
+ */
 public class OnConnectedEventClient  extends EventObject{
     
     public OnConnectedEventClient(Object source) {

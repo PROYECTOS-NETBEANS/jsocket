@@ -6,7 +6,7 @@ import jsocket.utils.TipoMsg;
 
 /**
  * Evento que se lanza dentro de los escuchadores del servidor
- * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
+ * @author Alex Limbert Yalusqui
  */
 public class OnConnectedEventServer extends EventObject{
     
@@ -49,7 +49,7 @@ public class OnConnectedEventServer extends EventObject{
     }
     /**
      * Devuelve true si el cliente esta desconectado, falso caso contrario
-     * @return 
+     * @return true si el cliente esta desconectado, en otro caso false
      */
     public boolean getClientDisconnect(){
         if(this.getSource() instanceof Paquete){

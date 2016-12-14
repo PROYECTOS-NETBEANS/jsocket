@@ -8,7 +8,7 @@ import jsocket.client.OnConnectedEventClient;
 
 /**
  * 
- * @author Alex Limbert Yalusqui <limbertyaluqui@gmail.com>
+ * @author Alex Limbert Yalusqui 
  */
 public class FrmCliente extends javax.swing.JFrame implements OnConnectedListenerClient{
 
@@ -29,8 +29,8 @@ public class FrmCliente extends javax.swing.JFrame implements OnConnectedListene
         }
         lblnick.setText(nick);
         modelo = new DefaultListModel();
-        cliente = new JSocketClient(5555, "192.168.61.130");
-        //cliente = new JSocketClient(5555, "localhost");
+        //cliente = new JSocketClient(5555, "192.168.61.130");
+        cliente = new JSocketClient(5555, "localhost");
         //cliente = new JSocketClient(5555, "192.168.0.100");
         cliente.addEventListener(this);
         cliente.conectarServidor(lblnick.getText());

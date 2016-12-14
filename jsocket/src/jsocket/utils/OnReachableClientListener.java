@@ -10,7 +10,7 @@ import java.util.EventListener;
 
 /**
  * Escuhador de eventos de los clientes que se desconecten
- * @author Alex Limbert Yalusqui <limbertx@gmail.com>
+ * @author Alex Limbert Yalusqui
  */
 public interface OnReachableClientListener extends EventListener{
     /**

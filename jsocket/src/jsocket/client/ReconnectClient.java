@@ -3,7 +3,7 @@ package jsocket.client;
 import jsocket.utils.OnReachableListener;
 /**
  * Clase encargada de la reconexion con el servidor
- * @author Alex Limbert Yalusqui <limbertyalusqui@gmail.com>
+ * @author Alex Limbert Yalusqui
  */
 public class ReconnectClient extends Thread{
     
@@ -77,7 +77,7 @@ public class ReconnectClient extends Thread{
 
     @Override
     @SuppressWarnings("SleepWhileInLoop")
-    public void run(){        
+    public void run(){
         while(LISTING){
             try {
                 if(!this.isAvalibleConnection()){
